@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parapente Colina - Vuelos de Bautismo en Santiago</title>
+    <!-- Carga de Tailwind CSS CDN para un diseño moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FUENTES: Inter (Cuerpo), y Montserrat (Nueva fuente para TODOS los Títulos y Logo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Iconos Lucide para un look limpio -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- CONFIGURACIÓN DE TAILWIND (Incluye nuevo cian claro) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'parapente-darkest': '#0A0A0D', /* Negro Oscuro */
+                        'parapente-accent': '#0396A6', /* Cian/Azul Primario (#0396A6) */
+                        'parapente-secondary': '#037F8C', /* Cian Secundario (Más profundo) */
+                        'parapente-neutral': '#73706F', /* Gris Neutro */
+                        'parapente-background': '#F2F2F2', /* Fondo Blanco Roto/Claro (Usado en Header) */
+                        'parapente-text-gray': '#8E8B8B', /* Color de Texto Gris Específico */
+                        'parapente-light-cyan': '#D1F0F3', /* NUEVO: Cian Claro Solicitado */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Montserrat', 'sans-serif'], 
+                        logo: ['Montserrat', 'sans-serif'], 
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- Estilos CSS Personalizados y Animaciones --- */
+        body {
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; 
+            color: #0A0A0D; 
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* La cabecera es completamente sólida (sin opacidad) */
+        .sticky-header {
+            transition: all 0.3s ease-in-out; 
+        }
+
+        /* --- Animación del Spinner de Carga (Círculo Giratorio) --- */
+        .loader {
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid #0396A6; 
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* --- Fin del Spinner --- */
+        
+        /* Efecto de inclinación/elevación sutil en las tarjetas al pasar el mouse */
+        .card-hover {
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ------------------------------------- */
+        /* Scroll Reveal (Acelerado a 0.5s) */
+        /* ------------------------------------- */
+        .blur-in {
+            transition: filter 0.5s ease-out, opacity 0.5s ease-out; /* Velocidad acelerada */
+            filter: blur(6px);
+            opacity: 0;
+        }
+        .blur-in.in-view {
+            filter: blur(0px);
+            opacity: 1;
+        }
+
+        /* Animación Opiniones */
+        .opinion-card {
+            position: relative;
+            overflow: hidden;
+            height: 350px; 
+            cursor: pointer;
+            border-radius: 1rem; 
+        }
+        
+        .opinion-card .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease-in-out;
+            /* COMENTARIO: REEMPLAZA ESTAS URLs por las fotos de tus clientes */
+            background-image: url('https://placehold.co/700x400/037F8C/F2F2F2?text=CLIENTE+SATISFECHO'); 
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .opinion-card:nth-child(2) .card-image {
+            background-image: url('https://placehold.co/700x400/0396A6/F2F2F2?text=VUELO+EN+FAMILIA'); 
+        }
+        .opinion-card:nth-child(3) .card-image {
+            background-image: url('https://placehold.co/700x400/73706F/0A0A0D?text=PILOTO+EXPERTO'); 
+        }
+        /* NUEVO: Cuarto placeholder para la nueva opinión */
+        .opinion-card:nth-child(4) .card-image {
+            background-image: url('https://placehold.co/700x400/037F8C/0A0A0D?text=PAISAJE+IMPRESIONANTE'); 
+        }
+
+        .opinion-card:hover .card-image {
+            transform: scale(1.1);
+        }
+
+        /* ------------------------------------- */
+        /* Overlay que TAPA la foto con transparencia al hacer hover */
+        /* ------------------------------------- */
+        .opinion-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem; 
+            /* Fondo semi-transparente para que la foto se vea debajo */
+            background-color: rgba(0, 0, 0, 0.75); 
+            backdrop-filter: none;
+            height: 100%; /* Cubre toda la tarjeta */
+            
+            /* Estado Inicial: Visible solo el 15% inferior (la "saliente negra") */
+            transform: translateY(85%); 
+            
+            transition: transform 0.4s ease-out; 
+            border-radius: 1rem; 
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Mantiene el contenido pegado al fondo */
+        }
+
+        .opinion-card:hover .opinion-overlay {
+            /* Estado Hover: Sube y cubre el 100% de la foto */
+            transform: translateY(0); 
+        }
+
+        /* El contenido (Ícono y Cita) que debe estar oculto inicialmente y aparecer en hover */
+        .opinion-overlay > i,
+        .opinion-overlay > .opinion-quote {
+            opacity: 0; /* Oculto por opacidad */
+            transition: opacity 0.3s ease-in; 
+            display: block; 
+        }
+
+        /* El contenido (Ícono y Cita) se hace visible cuando el overlay está arriba */
+        .opinion-card:hover .opinion-overlay > i,
+        .opinion-card:hover .opinion-overlay > .opinion-quote {
+            opacity: 1; /* Aparece por opacidad */
+            margin-bottom: 1rem;
+        }
+
+        /* Ajustamos el margen del nombre para que esté más arriba del fondo */
+        .opinion-overlay .mt-4 {
+            margin-top: 0.5rem; 
+        }
+        
+        /* Estilos específicos para la sección de clima dinámica */
+        .clima-grid {
+            min-height: 250px; /* Asegura que el spinner se vea */
+        }
+        .clima-panel {
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body class="text-parapente-darkest">
+
+    <!-- 1. CABECERA FIJA (STICKY HEADER) -->
+    <header id="header" class="sticky-header fixed top-0 left-0 right-0 bg-parapente-background text-parapente-darkest z-50 py-4 transition-all duration-300 ease-in-out shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <!-- COMENTARIO: REEMPLAZA 'logo.png' con la URL de tu logo. -->
+                <img src="img/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/50x50/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina" class="h-10 w-10 rounded-full object-cover ring-2 ring-parapente-accent">
+                <span class="text-xl font-extrabold tracking-tight font-logo text-parapente-darkest">PARAPENTE <span class="text-parapente-accent">COLINA</span></span>
+            </div>
+
+            <!-- Menú de Navegación -->
+            <nav class="space-x-4 flex">
+                <a href="#empresa" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">EMPRESA</a>
+                <a href="#experiencia" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">EXPERIENCIA</a>
+                <a href="#clima" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">CLIMA</a>
+                <a href="#opiniones" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">OPINIONES</a>
+                <a href="#ubicacion" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">UBICACIÓN</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="">
+        
+        <!-- Sección Hero / Portada (Contenido sin cambios) -->
+        <section class="relative h-[70vh] overflow-hidden flex items-center justify-center mb-16 shadow-inner pt-24" 
+            style="background-color: #0A0A0D; 
+            background-image: url('https://www.colina.cl/wp-content/uploads/2018/10/jornada_inclusiva_parapente_sep_2018-1.jpg'); 
+            background-size: cover; 
+            background-position: center;">
+            <div class="text-center p-8 max-w-4xl bg-black/30 rounded-xl p-6"> 
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 animate-fadeInUp">
+                    ¡El Cielo de <span class="text-parapente-secondary">Colina</span> te Espera!
+                </h1>
+                <p class="text-xl md:text-2xl text-parapente-background font-light mb-8">
+                    Vuelos de Parapente Tándem con la mejor vista de la Región Metropolitana.
+                </p>
+                <a href="#experiencia" class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-xl text-parapente-darkest bg-parapente-background hover:bg-parapente-neutral hover:text-white transition duration-300 transform hover:scale-105">
+                    Descubre la Aventura <i data-lucide="chevrons-down" class="w-5 h-5 ml-2"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. Sección EMPRESA & INTRODUCCIÓN (Contenido sin cambios) -->
+        <section id="empresa" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-accent border-b-2 border-parapente-accent/30 pb-2">Nuestra Empresa Familiar</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <p class="text-lg text-parapente-neutral leading-relaxed blur-in mb-4">
+                        **Parapente Colina** es más que una empresa, somos una familia de pilotos con una profunda conexión con el **Cerro de Colina**. Llevamos más de $X$ años ofreciendo vuelos de bautismo, garantizando la máxima seguridad y una experiencia llena de adrenalina y asombro. Somos certificados por la DGAC, asegurando que tu única preocupación sea disfrutar del paisaje.
+                    </p>
+                    <p class="text-lg text-parapente-neutral leading-relaxed border-l-4 border-parapente-accent pl-4 italic bg-parapente-background p-3 rounded-lg blur-in mb-4">
+                        "Te llevamos a ver Santiago desde una perspectiva completamente nueva. ¡Confía en nuestros equipos certificados y pilotos expertos!"
+                    </p>
+                </div>
+                <!-- Imagen de Introducción (Ruta Actualizada a img/vuelo.jpg) -->
+                <div class="relative overflow-hidden rounded-xl shadow-2xl card-hover">
+                    <!-- COMENTARIO: RUTA LOCAL: img/vuelo.jpg -->
+                    <img src="img/vuelo.jpg" onerror="this.onerror=null; this.src='https://placehold.co/700x400/0396A6/F2F2F2?text=VUELO+DESPEGANDO+EN+EL+CERRO';" alt="Vuelo despegando en Parapente Colina" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Sección EXPERIENCIA, PRECIOS y DATOS EXTRA (Contenido sin cambios) -->
+        <section id="experiencia" class="bg-parapente-light-cyan py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Detalles de la Experiencia y Precios</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Tarjeta 1: Fondo BLANCO y Texto NEGRO -->
+                    <div class="bg-white p-6 rounded-xl shadow-xl card-hover"> 
+                        <img src="https://placehold.co/80x80/037F8C/F2F2F2?text=EQUIPO" alt="Equipo de vuelo" class="w-20 h-20 mb-4 rounded-full object-cover mx-auto">
+                        <h3 class="text-2xl font-bold mb-3 text-parapente-darkest">La Experiencia</h3>
+                        <p class="text-parapente-darkest">El vuelo tándem dura entre **15 a 20 minutos**, dependiendo de las condiciones térmicas. Incluye instrucción previa, equipo completo (casco, arnés) y la garantía de volar con pilotos certificados DGAC. ¡Solo trae ganas de volar!</p>
+                    </div>
+
+                    <!-- Tarjeta 2: Fondo BLANCO y Texto NEGRO -->
+                    <div class="bg-white p-6 rounded-xl shadow-2xl card-hover transform scale-105 transition duration-300 border-4 border-parapente-accent"> 
+                        <i data-lucide="tags" class="w-10 h-10 text-parapente-darkest mb-4 animate-bounce"></i> 
+                        <h3 class="text-3xl font-bold mb-3 text-parapente-darkest">Precio Promocional</h3>
+                        <p class="text-6xl font-extrabold text-parapente-secondary mb-2">$85.000 <span class="text-xl font-normal">CLP</span></p>
+                        <p class="text-parapente-darkest font-semibold">Costo Total por Persona.</p>
+                        <ul class="mt-4 text-sm text-parapente-darkest space-y-1">
+                            <li>Opcional: Pack fotos/video por $15.000 CLP extra.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tarjeta 3: Fondo BLANCO y Texto NEGRO -->
+                    <div class="bg-white p-6 rounded-xl shadow-xl card-hover"> 
+                        <img src="https://placehold.co/80x80/73706F/F2F2F2?text=INFO" alt="Requisitos de vuelo" class="w-20 h-20 mb-4 rounded-full object-cover mx-auto">
+                        <h3 class="text-2xl font-bold mb-3 text-parapente-darkest">Datos a Considerar</h3>
+                        <ul class="list-disc list-inside text-parapente-darkest space-y-2">
+                            <li>**Reserva:** Obligatoria vía WhatsApp.</li>
+                            <li>**Peso:** Mínimo 30 kg / Máximo 100 kg.</li>
+                            <li>**Vestimenta:** Zapatillas cerradas, pantalón largo y chaqueta cortaviento.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Sección CLIMA (AHORA DINÁMICA CON LÓGICA DE EVALUACIÓN) -->
+        <section id="clima" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Pronóstico de Vuelo (Viento): Evaluación Automática</h2>
+
+            <!-- Contenedor donde se insertarán los paneles de clima -->
+            <div id="clima-container" 
+                class="clima-grid grid grid-cols-2 md:grid-cols-6 gap-4 bg-parapente-neutral/30 p-6 rounded-xl shadow-2xl overflow-x-auto relative">
+                
+                <!-- Spinner de carga inicial -->
+                <div id="clima-loader" class="absolute inset-0 flex items-center justify-center bg-parapente-neutral/50 rounded-xl">
+                    <div class="loader"></div>
+                    <span class="ml-4 text-white font-semibold">Cargando pronóstico...</span>
+                </div>
+                
+                <!-- Los paneles se generarán aquí con JavaScript -->
+            </div>
+            
+            <p id="clima-error" class="text-red-600 text-center mt-4 hidden font-semibold">
+                ⚠️ Error al obtener el pronóstico. Consulta la fuente oficial directamente.
+            </p>
+
+            <div class="text-center mt-8">
+                <!-- CTA Clima: Botón CIAN CLARO con letra GRIS -->
+                <a href="https://www.meteochile.gob.cl/" target="_blank" class="inline-block bg-parapente-light-cyan text-parapente-text-gray font-medium py-3 px-6 rounded-full shadow-md hover:bg-parapente-darkest hover:text-white transition duration-300">
+                    <i data-lucide="cloud-drizzle" class="w-5 h-5 inline-block mr-2"></i> Ver Pronóstico Oficial (DMC)
+                </a>
+            </div>
+        </section>
+
+
+        <!-- 5. Sección OPINIONES DE CLIENTES (Contenido sin cambios) -->
+        <section id="opiniones" class="bg-parapente-background max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Opiniones de Nuestros Clientes</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Tarjeta de Comentario 1 -->
+                <div class="opinion-card shadow-2xl card-hover">
+                    <div class="card-image"></div>
+                    <div class="opinion-overlay text-white">
+                        <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                        <p class="text-lg italic font-light opinion-quote">"¡La mejor decisión de mi vida! El despegue fue suave y la vista de la cordillera nevada fue de otro mundo. La atención familiar te hace sentir muy seguro."</p>
+                        <p class="mt-4 font-semibold text-white">- Claudio M.</p>
+                        <span class="text-xs text-gray-300">Vuelo Abril 2024</span>
+                    </div>
+                </div>
+                <!-- Tarjeta de Comentario 2 -->
+                <div class="opinion-card shadow-2xl card-hover">
+                    <div class="card-image"></div>
+                    <div class="opinion-overlay text-white">
+                        <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                        <p class="text-lg italic font-light opinion-quote">"Mi primera vez volando. Tenía un poco de miedo, pero el piloto fue muy paciente y me explicó todo. ¡Ya quiero volver a Colina!"</p>
+                        <p class="mt-4 font-semibold text-white">- Sofía N.</p>
+                        <span class="text-xs text-gray-300">Vuelo Marzo 2024</span>
+                    </div>
+                </div>
+                <!-- Tarjeta de Comentario 3 -->
+                <div class="opinion-card shadow-2xl card-hover">
+                    <div class="card-image"></div>
+                    <div class="opinion-overlay text-white">
+                        <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                        <p class="text-lg italic font-light opinion-quote">"El sistema de reserva por WhatsApp es rapidísimo. Llegamos, volamos y fue perfecto. 100% recomendados por profesionalismo y buena onda."</p>
+                        <p class="mt-4 font-semibold text-white">- Andrés P.</p>
+                        <span class="text-xs text-gray-300">Vuelo Mayo 2024</span>
+                    </div>
+                </div>
+                <!-- Tarjeta de Comentario 4 (NUEVA) -->
+                <div class="opinion-card shadow-2xl card-hover">
+                    <div class="card-image"></div>
+                    <div class="opinion-overlay text-white">
+                        <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                        <p class="text-lg italic font-light opinion-quote">"¡Fue increíble! Ver el paisaje de Colina desde arriba es una experiencia que todos deben vivir. Los pilotos son unos cracks."</p>
+                        <p class="mt-4 font-semibold text-white">- Benjamín G.</p>
+                        <span class="text-xs text-gray-300">Vuelo Junio 2024</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 6. Sección UBICACIÓN (Contenido sin cambios) -->
+        <section id="ubicacion" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Cómo Llegar al Cerro de Colina</h2>
+            
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-parapente-accent/50 relative">
+                
+                <!-- Contenedor del Spinner de Carga -->
+                <div id="map-loader" class="absolute inset-0 flex items-center justify-center bg-gray-100 z-10 transition-opacity duration-500">
+                    <div class="loader"></div>
+                </div>
+
+                <!-- IFRAME Mock de Mapa de Google Maps (Se oculta hasta que carga el iframe) -->
+                <iframe 
+                    id="google-map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13374.004944299912!2d-70.67246535!3d-33.2081596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x966212b5f67554f7%3A0xf695b28d7a124035!2sColina%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses!2scl!4v1678886400000!5m2!1ses!2scl" 
+                    width="100%" 
+                    height="450" 
+                    style="border:0; opacity: 0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Mapa de Colina, Chile"
+                    onload="document.getElementById('map-loader').style.opacity = '0'; document.getElementById('map-loader').style.display = 'none'; this.style.opacity = '1';"
+                ></iframe>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p class="text-xl font-semibold text-parapente-darkest mb-4">Dirección Específica: **Camino al Cerro, Colina.** (Detalles exactos se dan al reservar).</p>
+                <!-- CTA Ubicación: Botón CIAN CLARO con letra GRIS -->
+                <a href="https://maps.app.goo.gl/" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-parapente-text-gray bg-parapente-light-cyan hover:bg-parapente-darkest hover:text-white transition duration-300">
+                    <i data-lucide="navigation" class="w-5 h-5 inline-block mr-2"></i> Obtener Ruta y Navegar
+                </a>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- 7. FOOTER / SECCIÓN DE CONTACTO FINAL (Contenido sin cambios) -->
+    <footer id="contacto" class="bg-parapente-light-cyan py-12 text-parapente-text-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Logo y Lema -->
+            <div>
+                <div class="flex items-center mb-4">
+                    <img src="img/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/40x40/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina" class="h-8 w-8 rounded-full object-cover mr-3 ring-1 ring-parapente-darkest">
+                    <span class="text-xl font-bold font-logo text-parapente-text-gray">Parapente <span class="text-parapente-text-gray">Colina</span></span>
+                </div>
+                <p class="text-sm">Vive la libertad. La mejor experiencia de vuelo tándem en Chile central.</p>
+            </div>
+
+            <!-- Contacto Directo: Títulos y Contenido en GRIS (#8E8B8B) -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4 font-logo text-parapente-text-gray">Contáctanos</h4>
+                <ul class="space-y-2">
+                    <li><i data-lucide="phone" class="w-4 h-4 inline-block mr-2 text-parapente-text-gray"></i> +56 9 XXXX XXXX (Reservas)</li>
+                    <li><i data-lucide="mail" class="w-4 h-4 inline-block mr-2 text-parapente-text-gray"></i> contacto@parapentecolina.cl</li>
+                    <li><i data-lucide="map-pin" class="w-4 h-4 inline-block mr-2 text-parapente-text-gray"></i> Colina, Santiago, Chile</li>
+                </ul>
+            </div>
+
+            <!-- Redes Sociales y Legal: Títulos y Contenido en GRIS (#8E8B8B) -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4 font-logo text-parapente-text-gray">Información y Redes</h4>
+                <ul class="space-y-2">
+                    <li>Síguenos en Instagram y Facebook.</li>
+                    <li>© 2024 Parapente Colina.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Texto de Copyright hereda el gris y borde ajustado -->
+        <div class="mt-8 pt-6 border-t border-parapente-text-gray/50 text-center text-sm">
+            Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- BOTÓN FLOTANTE DE WHATSAPP (Contenido sin cambios) -->
+    <a href="https://wa.me/569XXXXXXXX?text=Hola,%20quisiera%20reservar%20un%20vuelo%20en%20parapente%20en%20Colina." target="_blank" class="whatsapp-float fixed bottom-6 right-6 bg-green-500 p-4 rounded-full shadow-2xl transition duration-300 transform hover:scale-110 flex items-center justify-center" aria-label="Chatea con nosotros por WhatsApp para reservar">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" class="text-parapente-darkest">
+            <path d="M12.04 2C6.58 2 2.14 6.43 2.14 11.89c0 1.83.5 3.5.9 5.05L2 22l4.87-1.38c1.55.9 3.22 1.37 4.77 1.37 5.46 0 9.9-4.43 9.9-9.89S17.5 2 12.04 2zm3.17 14.63c-.1-.18-.38-.28-.79-.47-.4-.18-.94-.37-1.09-.39-.16-.03-.34-.02-.48.17-.14.19-.54.61-.66.73-.13.13-.25.15-.47.05-.22-.1-.9-.33-1.7-1.04-.59-.55-.99-1.24-1.1-1.43-.1-.19-.01-.29.18-.48.16-.16.34-.38.48-.56.14-.19.19-.34.28-.48.09-.15.05-.28-.02-.42-.06-.14-.4-.96-.54-1.32-.14-.36-.28-.3-.38-.3-.1-.01-.23-.01-.35-.01-.12 0-.32.04-.49.22-.17.18-.64.63-.64 1.54 0 .91.66 1.78.75 1.9.09.13 1.3 2 3.1 2.8.44.2.78.33 1.05.42.42.14.65.11.8.07.2-.06.63-.26.73-.5.1-.24.1-.45.07-.49-.03-.04-.1-.07-.2-.17z"/>
+        </svg>
+    </a>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        // 1. Inicializa los iconos SVG de Lucide
+        lucide.createIcons();
+
+        // 2. Lógica de Smooth Scrolling para anclas (ajustando la posición por el header fijo)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                const headerHeight = document.getElementById('header').offsetHeight; 
+
+                if (targetElement) {
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    // Ajuste de 20px extra para un mejor margen
+                    const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 20; 
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+
+        // 3. Lógica de la cabecera adaptable (expande/contrae)
+        function handleHeaderSize() {
+            const header = document.getElementById('header');
+            // La cabecera siempre será opaca, solo ajustamos el padding (tamaño)
+            if (window.scrollY > 50) {
+                header.classList.remove('py-4');
+                header.classList.add('py-2');
+            } else {
+                header.classList.remove('py-2');
+                header.classList.add('py-4');
+            }
+        }
+        window.addEventListener('scroll', handleHeaderSize);
+        document.addEventListener('DOMContentLoaded', handleHeaderSize); 
+
+
+        // 4. Lógica de Scroll Reveal (Blur a Enfocado)
+        const blurElements = document.querySelectorAll('.blur-in');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        blurElements.forEach(el => observer.observe(el));
+        
+        // ==========================================================
+        // 5. LÓGICA DE CLIMA DINÁMICO E INMEDIATO
+        // ==========================================================
+        
+        /**
+         * Lógica de recomendación de vuelo basada en la velocidad del viento.
+         * @param {number} speed - Velocidad del viento en km/h.
+         * @returns {{text: string, colorClass: string}} - Objeto con el texto y la clase Tailwind para el color.
+         */
+        function getFlightRecommendation(speed) {
+            // Usamos km/h como unidad base para las reglas
+            if (speed < 20) {
+                return { text: "ÓPTIMO", colorClass: "text-green-600" }; 
+            } else if (speed >= 20 && speed <= 35) {
+                return { text: "BUENO", colorClass: "text-lime-600" }; 
+            } else if (speed > 35 && speed <= 50) {
+                return { text: "NORMAL", colorClass: "text-yellow-600" }; 
+            } else { // speed > 50 km/h
+                return { text: "BAJO / RIESGOSO", colorClass: "text-red-600" }; 
+            }
+        }
+        
+        /**
+         * Devuelve el ícono Lucide y la clase de color según el estado del clima.
+         * @param {string} condition - Condición del clima (sol, nube, lluvia, viento).
+         * @returns {{icon: string, color: string}}
+         */
+        function getWeatherIcon(condition) {
+            switch (condition.toLowerCase()) {
+                case 'sol':
+                    return { icon: 'sun', color: 'text-yellow-500' };
+                case 'nubes':
+                    return { icon: 'cloudy', color: 'text-gray-500' };
+                case 'parcial':
+                    return { icon: 'cloud-sun', color: 'text-parapente-accent' };
+                case 'lluvia':
+                    return { icon: 'cloud-rain', color: 'text-blue-500' };
+                case 'tormenta':
+                    return { icon: 'cloud-lightning', color: 'text-parapente-darkest' };
+                case 'viento':
+                    return { icon: 'wind', color: 'text-parapente-secondary' };
+                default:
+                    return { icon: 'cloud', color: 'text-gray-400' };
+            }
+        }
+
+        /**
+         * Simula la obtención de datos de clima (el JSON que enviaría el backend).
+         * En la implementación real, esta función haría un 'fetch' a tu servidor proxy.
+         */
+        async function fetchSimulatedForecast() {
+            // URL real de tu backend: const BACKEND_URL = '/api/get-forecast'; 
+            
+            // Simulación de datos para 6 días (los datos de viento son la clave)
+            const forecast = [
+                { day: "HOY", date: "Lun 30", temp: 28, condition: "Sol", windSpeed: 15, windDir: "OESTE" },
+                { day: "Mañana", date: "Mar 1", temp: 30, condition: "Parcial", windSpeed: 25, windDir: "NORTE" },
+                { day: "Miérc", date: "Mié 2", temp: 25, condition: "Nubes", windSpeed: 40, windDir: "SUR" },
+                { day: "Jueves", date: "Jue 3", temp: 20, condition: "Lluvia", windSpeed: 55, windDir: "ESTE" }, // Riesgoso
+                { day: "Viernes", date: "Vie 4", temp: 23, condition: "Viento", windSpeed: 30, windDir: "NORTE" }, 
+                { day: "Sábado", date: "Sáb 5", temp: 26, condition: "Sol", windSpeed: 18, windDir: "OESTE" }
+            ];
+            
+            // Simular un retraso de 1 segundo para la carga asíncrona
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            return forecast;
+        }
+
+        /**
+         * Genera los paneles de clima y actualiza la sección.
+         */
+        async function renderWeatherSection() {
+            const container = document.getElementById('clima-container');
+            const loader = document.getElementById('clima-loader');
+            const errorMsg = document.getElementById('clima-error');
+
+            try {
+                // Muestra el spinner y oculta los paneles por si ya había contenido
+                loader.style.opacity = '1';
+                loader.style.display = 'flex';
+                container.innerHTML = '';
+                errorMsg.classList.add('hidden');
+
+                const forecastData = await fetchSimulatedForecast();
+                
+                // Itera sobre los datos para crear cada panel
+                forecastData.forEach(dayData => {
+                    const recommendation = getFlightRecommendation(dayData.windSpeed);
+                    const icon = getWeatherIcon(dayData.condition);
+                    
+                    const panelHTML = `
+                        <div class="bg-white p-4 rounded-lg text-center shadow-lg clima-panel border border-parapente-accent/10">
+                            <p class="font-bold text-lg text-parapente-darkest">${dayData.day}</p>
+                            <p class="text-sm text-gray-500 mb-2">${dayData.date}</p>
+                            
+                            <!-- Icono dinámico -->
+                            <i data-lucide="${icon.icon}" class="w-8 h-8 ${icon.color} mx-auto mb-2"></i>
+                            <p class="font-extrabold text-2xl mb-1">${dayData.temp}°C</p>
+                            
+                            <div class="border-t pt-2 mt-2">
+                                <p class="font-semibold text-sm text-parapente-accent">Viento 💨</p>
+                                <p class="text-xs">${dayData.windSpeed} km/h ${dayData.windDir}</p>
+                                
+                                <!-- Evaluación dinámica -->
+                                <p class="${recommendation.colorClass} font-bold text-xs mt-1">${recommendation.text}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += panelHTML;
+                });
+                
+                // Vuelve a inicializar los iconos de Lucide para los nuevos paneles
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error("Error al renderizar el clima:", error);
+                container.innerHTML = '';
+                errorMsg.classList.remove('hidden');
+
+            } finally {
+                // Oculta el spinner al finalizar
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            }
+        }
+        
+        // Llamar a la función para renderizar el clima tan pronto como cargue la página
+        document.addEventListener('DOMContentLoaded', renderWeatherSection);
+        
+    </script>
+</body>
+</html>
