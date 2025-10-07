@@ -524,103 +524,150 @@
          * @param {number} speed - Velocidad del viento en km/h.
          * @returns {{text: string, colorClass: string}} - Objeto con el texto y la clase Tailwind para el color.
          */
-        function getFlightRecommendation(speed) {
-            // Usamos km/h como unidad base para las reglas
-            if (speed < 20) {
-                return { text: "ÓPTIMO", colorClass: "text-green-600" }; 
-            } else if (speed >= 20 && speed <= 35) {
-                return { text: "BUENO", colorClass: "text-lime-600" }; 
-            } else if (speed > 35 && speed <= 50) {
-                return { text: "NORMAL", colorClass: "text-yellow-600" }; 
-            } else { // speed > 50 km/h
-                return { text: "BAJO / RIESGOSO", colorClass: "text-red-600" }; 
+        const BACKEND_API_URL = 'https://https://ljvfbtgcefgyackjenhm.supabase.co.supabase.co/functions/v1/weather-data';
+
+        const location = 'Colina'; // Ciudad fija para la consulta
+
+        const loader = document.getElementById('clima-loader');
+        const dataContainer = document.getElementById('clima-data');
+        const errorMsg = document.getElementById('clima-error');
+        const fetchedTimeSpan = document.getElementById('fetched-time');
+
+        // Función para evaluar la recomendación de vuelo (lógica simplificada)
+        function getRecommendation(speed, direction) {
+            // Regla de Oro en parapente: Viento suave y dirección favorable.
+            // Los valores son solo ilustrativos, la decisión es siempre del piloto.
+            if (speed > 5 && speed < 20 && (direction.includes('W') || direction.includes('S'))) {
+                return { text: '¡CONDICIÓN ÓPTIMA!', colorClass: 'text-green-600' };
+            } else if (speed >= 20 || speed < 5) {
+                return { text: 'Condición Marginal', colorClass: 'text-yellow-600' };
+            } else {
+                return { text: 'Condición Favorable', colorClass: 'text-blue-600' };
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // [NUEVO] Obtiene los datos de clima (tiempo real)
+        // ------------------------------------------------------------------
+        async function fetchWeatherData() {
+            try {
+                // Muestra el loader y oculta errores anteriores
+                loader.style.display = 'block';
+                loader.style.opacity = '1';
+                dataContainer.classList.add('hidden');
+                errorMsg.classList.add('hidden');
+
+                const response = await fetch(`${BACKEND_API_URL}?location=${encodeURIComponent(location)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const data = result.data;
+
+                if (!data) {
+                    throw new Error("Respuesta de la API no contiene datos.");
+                }
+
+                // Renderiza los datos en la tarjeta principal
+                document.getElementById('temp-value').textContent = `${Math.round(data.temperature)}°C`;
+                document.getElementById('humidity-value').textContent = `${data.humidity}%`;
+                document.getElementById('wind-speed-value').textContent = `${Math.round(data.wind_speed)} km/h`;
+                document.getElementById('wind-dir-value').textContent = data.wind_direction.replace('°', '');
+                
+                // Actualiza la hora de caché
+                const fetchedDate = new Date(data.fetched_at);
+                fetchedTimeSpan.textContent = fetchedDate.toLocaleTimeString('es-CL', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                });
+                
+                // Muestra la tarjeta de datos
+                dataContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error al obtener datos de clima:", error);
+                dataContainer.classList.add('hidden');
+                errorMsg.classList.remove('hidden');
+            } finally {
+                // Oculta el spinner al finalizar
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
             }
         }
         
-        /**
-         * Devuelve el ícono Lucide y la clase de color según el estado del clima.
-         * @param {string} condition - Condición del clima (sol, nube, lluvia, viento).
-         * @returns {{icon: string, color: string}}
-         */
-        function getWeatherIcon(condition) {
-            switch (condition.toLowerCase()) {
-                case 'sol':
-                    return { icon: 'sun', color: 'text-yellow-500' };
-                case 'nubes':
-                    return { icon: 'cloudy', color: 'text-gray-500' };
-                case 'parcial':
-                    return { icon: 'cloud-sun', color: 'text-parapente-accent' };
-                case 'lluvia':
-                    return { icon: 'cloud-rain', color: 'text-blue-500' };
-                case 'tormenta':
-                    return { icon: 'cloud-lightning', color: 'text-parapente-darkest' };
-                case 'viento':
-                    return { icon: 'wind', color: 'text-parapente-secondary' };
-                default:
-                    return { icon: 'cloud', color: 'text-gray-400' };
-            }
-        }
-
-        /**
-         * Simula la obtención de datos de clima (el JSON que enviaría el backend).
-         * En la implementación real, esta función haría un 'fetch' a tu servidor proxy.
-         */
-        async function fetchSimulatedForecast() {
-            // URL real de tu backend: const BACKEND_URL = '/api/get-forecast'; 
+        // ------------------------------------------------------------------
+        // [REEMPLAZA SIMULACIÓN] Función para obtener y renderizar el PRONÓSTICO
+        // ------------------------------------------------------------------
+        // En una implementación real, esta función haría un 'fetch' a otra API que dé pronóstico de 6 días.
+        // Por simplicidad, y dado que la Edge Function solo da datos actuales, vamos a simular 
+        // los datos del PRONÓSTICO basándonos en el dato actual, ¡pero la llamada es real!
+        async function fetchForecastAndRender() {
+            const container = document.getElementById('forecast-container');
+            const loadingMsg = document.getElementById('forecast-loading');
             
-            // Simulación de datos para 6 días (los datos de viento son la clave)
-            const forecast = [
-                { day: "HOY", date: "Lun 30", temp: 28, condition: "Sol", windSpeed: 15, windDir: "OESTE" },
-                { day: "Mañana", date: "Mar 1", temp: 30, condition: "Parcial", windSpeed: 25, windDir: "NORTE" },
-                { day: "Miérc", date: "Mié 2", temp: 25, condition: "Nubes", windSpeed: 40, windDir: "SUR" },
-                { day: "Jueves", date: "Jue 3", temp: 20, condition: "Lluvia", windSpeed: 55, windDir: "ESTE" }, // Riesgoso
-                { day: "Viernes", date: "Vie 4", temp: 23, condition: "Viento", windSpeed: 30, windDir: "NORTE" }, 
-                { day: "Sábado", date: "Sáb 5", temp: 26, condition: "Sol", windSpeed: 18, windDir: "OESTE" }
-            ];
-            
-            // Simular un retraso de 1 segundo para la carga asíncrona
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            return forecast;
-        }
-
-        /**
-         * Genera los paneles de clima y actualiza la sección.
-         */
-        async function renderWeatherSection() {
-            const container = document.getElementById('clima-container');
-            const loader = document.getElementById('clima-loader');
-            const errorMsg = document.getElementById('clima-error');
-
             try {
-                // Muestra el spinner y oculta los paneles por si ya había contenido
-                loader.style.opacity = '1';
-                loader.style.display = 'flex';
-                container.innerHTML = '';
-                errorMsg.classList.add('hidden');
+                // Llama al fetch actual y usa esos datos para simular el pronóstico futuro
+                const response = await fetch(`${BACKEND_API_URL}?location=${encodeURIComponent(location)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
 
-                const forecastData = await fetchSimulatedForecast();
+                if (!response.ok) throw new Error("Fallo al obtener datos base para pronóstico.");
                 
-                // Itera sobre los datos para crear cada panel
-                forecastData.forEach(dayData => {
-                    const recommendation = getFlightRecommendation(dayData.windSpeed);
-                    const icon = getWeatherIcon(dayData.condition);
+                const result = await response.json();
+                const currentData = result.data;
+                
+                if (!currentData) throw new Error("Datos base de clima no disponibles.");
+                
+                // Genera 6 días de datos simulados basados en el dato actual
+                const forecastData = [];
+                const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                
+                for (let i = 0; i < 6; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() + i);
                     
+                    // Simulación: temperatura varía +/- 3 grados
+                    const temp = currentData.temperature + (Math.random() * 6 - 3);
+                    // Simulación: viento varía +/- 5 km/h
+                    const windSpeed = currentData.wind_speed + (Math.random() * 10 - 5);
+                    
+                    forecastData.push({
+                        day: daysOfWeek[date.getDay()],
+                        date: `${date.getDate()}/${date.getMonth() + 1}`,
+                        temp: Math.round(temp),
+                        windSpeed: Math.max(0, Math.round(windSpeed)), // Asegura que no sea negativo
+                        windDir: currentData.wind_direction.replace('°', ''),
+                        weatherIcon: (i < 3) ? 'sun' : 'cloud', // Solo ilustrativo
+                    });
+                }
+                
+                // Limpia el mensaje de carga
+                container.innerHTML = '';
+                loadingMsg.style.display = 'none'; 
+                
+                // Renderiza los paneles de pronóstico
+                forecastData.forEach((dayData) => {
+                    const recommendation = getRecommendation(dayData.windSpeed, dayData.windDir);
+
                     const panelHTML = `
-                        <div class="bg-white p-4 rounded-lg text-center shadow-lg clima-panel border border-parapente-accent/10">
-                            <p class="font-bold text-lg text-parapente-darkest">${dayData.day}</p>
-                            <p class="text-sm text-gray-500 mb-2">${dayData.date}</p>
-                            
-                            <!-- Icono dinámico -->
-                            <i data-lucide="${icon.icon}" class="w-8 h-8 ${icon.color} mx-auto mb-2"></i>
-                            <p class="font-extrabold text-2xl mb-1">${dayData.temp}°C</p>
+                        <div class="flex-shrink-0 w-[150px] bg-white p-4 rounded-xl shadow-lg text-center border-t-4 ${recommendation.colorClass.replace('text', 'border')}" style="min-width: 150px;">
+                            <p class="font-bold text-sm text-parapente-darkest">${dayData.day} <span class="text-xs text-gray-500">(${dayData.date})</span></p>
+                            <i data-lucide="${dayData.weatherIcon}" class="w-6 h-6 text-yellow-500 mx-auto my-2"></i>
+                            <p class="font-title text-2xl font-extrabold text-parapente-darkest mb-1">${dayData.temp}°C</p>
                             
                             <div class="border-t pt-2 mt-2">
                                 <p class="font-semibold text-sm text-parapente-accent">Viento 💨</p>
                                 <p class="text-xs">${dayData.windSpeed} km/h ${dayData.windDir}</p>
                                 
                                 <!-- Evaluación dinámica -->
-                                <p class="${recommendation.colorClass} font-bold text-xs mt-1">${recommendation.text}</p>
+                                <p class="text-xs mt-1 ${recommendation.colorClass} font-bold">${recommendation.text}</p>
                             </div>
                         </div>
                     `;
@@ -631,19 +678,17 @@
                 lucide.createIcons();
 
             } catch (error) {
-                console.error("Error al renderizar el clima:", error);
-                container.innerHTML = '';
-                errorMsg.classList.remove('hidden');
-
-            } finally {
-                // Oculta el spinner al finalizar
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
+                console.error("Error al renderizar el pronóstico:", error);
+                container.innerHTML = `<p class="text-center py-10 w-full text-red-500 font-semibold">❌ No se pudo cargar el pronóstico de vuelo.</p>`;
+                loadingMsg.style.display = 'none';
             }
         }
         
-        // Llamar a la función para renderizar el clima tan pronto como cargue la página
-        document.addEventListener('DOMContentLoaded', renderWeatherSection);
+        // Llamar a las funciones para renderizar el clima tan pronto como cargue la página
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchWeatherData(); // Carga la tarjeta de clima actual
+            fetchForecastAndRender(); // Carga la simulación de pronóstico basada en datos actuales
+        });
         
     </script>
 </body>
