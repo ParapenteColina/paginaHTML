@@ -543,11 +543,11 @@
                 // 2. Llamada al backend, usando 'flightLocation'
                 const response = await fetch(`${BACKEND_API_URL}?location=${encodeURIComponent(flightLocation)}`, {
                     method: 'GET',
-                    headers: {'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY, // Llave para la pasarela
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}` // Llave para autenticación
-                    },
-                });
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                 },
+            });
 
                 if (!response.ok) {
                     // Si la respuesta no es OK (ej. 404/500), lanzamos un error claro
