@@ -1,104 +1,95 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
+// Los encabezados CORS son esenciales para que el Frontend pueda acceder.
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface WeatherData {
+// =================================================================
+// Interfaces de Datos
+// =================================================================
+
+interface DayForecast {
+  date: string;
+  temperature_max: number;
+  temperature_min: number;
+  temperature_avg: number;
+  conditions: string;
+  wind_speed: number; // en km/h
+}
+
+interface ForecastData {
   location: string;
-  temperature: number | null;
-  humidity: number | null;
-  wind_speed: number | null;
-  wind_direction: string | null;
-  weather_description: string | null;
+  forecast: DayForecast[];
   fetched_at: string;
 }
 
+// =================================================================
+// FUNCIÓN PRINCIPAL DE SUPABASE
+// =================================================================
+
+// Punto de entrada de la función Deno/Supabase
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
+  // Manejo de peticiones preflight (CORS)
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const url = new URL(req.url);
+    // Usamos 'Santiago' como valor por defecto, como estaba en tu código.
     const location = url.searchParams.get('location') || 'Santiago';
-    
-    console.log(`Fetching weather data for: ${location}`);
+    console.log(`Fetching 5-day forecast for: ${location}`);
 
-    // Nota: Supabase proporciona SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY automáticamente
-    // si el proyecto está correctamente linkeado y con sus secrets
+    // Inicializa el cliente Supabase (usa la clave de rol de servicio para permisos de administrador)
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Check cache first (data less than 30 minutes old)
-    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
-    
+    // =================================================================
+    // 1. CACHÉ: Revisar datos recientes (Forecasts expiran en 6 horas)
+    // =================================================================
+    const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+
     const { data: cachedData, error: cacheError } = await supabaseClient
-      .from('weather_cache')
-      .select('*')
+      .from('forecast_cache')
+      .select('forecast_data')
       .eq('location', location)
-      .gte('fetched_at', thirtyMinutesAgo)
+      .gte('fetched_at', sixHoursAgo)
       .order('fetched_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
     if (cachedData && !cacheError) {
-      console.log('Returning cached weather data');
+      console.log('Returning cached 5-day forecast');
       return new Response(
-        JSON.stringify({ 
-          data: cachedData, 
+        JSON.stringify({
+          data: cachedData.forecast_data as ForecastData,
           source: 'cache',
-          message: 'Data from cache (less than 30 minutes old)'
+          message: 'Data from cache (less than 6 hours old)'
         }),
-        { 
+        {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200 
+          status: 200
         }
       );
     }
 
-    // Since Chilean Meteorological Service doesn't have a public REST API,
-    // we'll use OpenWeatherMap as a reliable alternative for Chilean cities
-    
+    // =================================================================
+    // 2. API EXTERNA: OpenWeatherMap
+    // =================================================================
     const OPENWEATHER_API_KEY = Deno.env.get('OPENWEATHER_API_KEY');
-    
+
     if (!OPENWEATHER_API_KEY) {
-      console.log('OpenWeatherMap API key not configured, returning mock data');
-      
-      // Return mock data for development
-      const mockData: WeatherData = {
-        location,
-        temperature: 18 + Math.random() * 10,
-        humidity: 50 + Math.random() * 30,
-        wind_speed: 5 + Math.random() * 15,
-        wind_direction: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.floor(Math.random() * 8)],
-        weather_description: ['Despejado', 'Parcialmente nublado', 'Nublado', 'Viento'][Math.floor(Math.random() * 4)],
-        fetched_at: new Date().toISOString()
-      };
-
-      // Cache the mock data
-      await supabaseClient.from('weather_cache').insert(mockData);
-
-      return new Response(
-        JSON.stringify({ 
-          data: mockData, 
-          source: 'mock',
-          message: 'Mock data - Add OPENWEATHER_API_KEY secret for real weather data'
-        }),
-        { 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200 
-        }
-      );
+      // Este error es crucial y debe detener la función si la clave no está.
+      throw new Error('OPENWEATHER_API_KEY is not set in environment secrets.');
     }
 
-    // Fetch real weather data from OpenWeatherMap
+    // Usamos el endpoint de pronóstico de 5 días / 3 horas
     const weatherResponse = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)},CL&appid=${OPENWEATHER_API_KEY}&units=metric&lang=es`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(location)},CL&appid=${OPENWEATHER_API_KEY}&units=metric&lang=es`
     );
 
     if (!weatherResponse.ok) {
@@ -106,44 +97,84 @@ Deno.serve(async (req) => {
     }
 
     const weatherJson = await weatherResponse.json();
-    
-    // Función para convertir grados a dirección cardinal (simplificado)
-    const degToCardinal = (deg: number): string => {
-        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-        const index = Math.round(deg / 45) % 8;
-        return directions[index];
-    };
 
-    const weatherData: WeatherData = {
+    // =================================================================
+    // 3. PROCESAMIENTO: Agregar pronósticos por día
+    // =================================================================
+
+    // Agregamos pronósticos de 3 horas en pronósticos diarios (ESTO RESUELVE LA ADVERTENCIA DE VS CODE)
+    const dailyForecasts = new Map<string, {
+      temps: number[];
+      conditions: string[];
+      windSpeeds: number[];
+    }>();
+
+    // Limitamos a los próximos 5 días, excluyendo las horas restantes de hoy
+    const now = new Date();
+    // Encuentra el primer pronóstico de 3 horas que comienza mañana
+    const list = weatherJson.list.filter((item: any) => new Date(item.dt * 1000).getDate() !== now.getDate());
+
+    list.forEach((item: any) => {
+      // Fecha en formato 'YYYY-MM-DD'
+      const dateKey = new Date(item.dt * 1000).toISOString().split('T')[0];
+      const windSpeedKmh = parseFloat((item.wind.speed * 3.6).toFixed(1)); // Convertir m/s a km/h
+
+      if (!dailyForecasts.has(dateKey)) {
+        dailyForecasts.set(dateKey, {
+          temps: [],
+          conditions: [],
+          windSpeeds: [],
+        });
+      }
+
+      const data = dailyForecasts.get(dateKey)!;
+      data.temps.push(item.main.temp);
+      data.conditions.push(item.weather[0].description);
+      data.windSpeeds.push(windSpeedKmh);
+    });
+
+    // 4. Transformar los datos agregados en el formato final
+    const forecast: DayForecast[] = Array.from(dailyForecasts.entries())
+      .slice(0, 5) // Tomar solo los primeros 5 días
+      .map(([dateKey, data]) => ({
+        date: dateKey,
+        temperature_max: Math.max(...data.temps),
+        temperature_min: Math.min(...data.temps),
+        // Redondear a un decimal
+        temperature_avg: parseFloat((data.temps.reduce((a, b) => a + b, 0) / data.temps.length).toFixed(1)),
+        conditions: data.conditions[Math.floor(data.conditions.length / 2)], // Condición de la mitad del día
+        wind_speed: Math.round(data.windSpeeds.reduce((a, b) => a + b, 0) / data.windSpeeds.length)
+      }));
+
+    const forecastData: ForecastData = {
       location,
-      temperature: weatherJson.main?.temp || null,
-      humidity: weatherJson.main?.humidity || null,
-      wind_speed: weatherJson.wind?.speed || null,
-      // Usamos la conversión simplificada
-      wind_direction: weatherJson.wind?.deg ? degToCardinal(weatherJson.wind.deg) : null,
-      weather_description: weatherJson.weather?.[0]?.description || null,
+      forecast,
       fetched_at: new Date().toISOString()
     };
 
-    // Cache the new data
+    // 5. CACHÉ: Guardar el nuevo pronóstico
     const { error: insertError } = await supabaseClient
-      .from('weather_cache')
-      .insert(weatherData);
+      .from('forecast_cache')
+      .insert({
+        location,
+        forecast_data: forecastData,
+        fetched_at: new Date().toISOString()
+      });
 
     if (insertError) {
-      console.error('Error caching weather data:', insertError);
+      console.error('Error caching forecast data:', insertError);
     }
 
-    console.log('Returning fresh weather data');
+    console.log('Returning fresh 5-day forecast');
     return new Response(
-      JSON.stringify({ 
-        data: weatherData, 
+      JSON.stringify({
+        data: forecastData,
         source: 'api',
-        message: 'Fresh data from weather service'
+        message: 'Fresh 5-day forecast from OpenWeatherMap'
       }),
-      { 
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200 
+        status: 200
       }
     );
 
@@ -151,14 +182,14 @@ Deno.serve(async (req) => {
     console.error('Error in weather-data function:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: errorMessage,
         details: 'Failed to fetch weather data'
       }),
-      { 
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500 
+        status: 500
       }
     );
   }
-});
+}, { noAuth: true }); 
