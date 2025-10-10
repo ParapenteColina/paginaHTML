@@ -190,21 +190,34 @@
     <!-- 1. CABECERA FIJA (STICKY HEADER) -->
     <header id="header" class="sticky-header fixed top-0 left-0 right-0 bg-parapente-background text-parapente-darkest z-50 py-4 transition-all duration-300 ease-in-out shadow-xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            
-            <!-- Logo -->
+        
             <div class="flex items-center space-x-3">
-                <!-- COMENTARIO: REEMPLAZA 'logo.png' con la URL de tu logo. -->
-                <img src="image/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/50x50/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina" class="h-10 w-10 rounded-full object-cover ring-2 ring-parapente-accent">
+                <img src="img/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/50x50/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina" class="h-10 w-10 rounded-full object-cover ring-2 ring-parapente-accent">
                 <span class="text-xl font-extrabold tracking-tight font-logo text-parapente-darkest">PARAPENTE <span class="text-parapente-accent">COLINA</span></span>
             </div>
 
-            <!-- Menú de Navegación -->
-            <nav class="space-x-4 flex">
+            <nav class="hidden md:flex space-x-4">
                 <a href="#empresa" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">EMPRESA</a>
                 <a href="#experiencia" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">EXPERIENCIA</a>
                 <a href="#clima" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">CLIMA</a>
                 <a href="#opiniones" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">OPINIONES</a>
                 <a href="#ubicacion" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">UBICACIÓN</a>
+            </nav>
+
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-parapente-darkest">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-parapente-background pb-4">
+            <nav class="flex flex-col items-center space-y-4">
+                <a href="#empresa" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">EMPRESA</a>
+                <a href="#experiencia" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">EXPERIENCIA</a>
+                <a href="#clima" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">CLIMA</a>
+                <a href="#opiniones" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">OPINIONES</a>
+                <a href="#ubicacion" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">UBICACIÓN</a>
             </nav>
         </div>
     </header>
@@ -686,6 +699,15 @@
             setTimeout(() => {
                 formMessage.classList.add('hidden');
             }, 5000);
+        });
+
+
+        // --- Lógica para el menú de hamburguesa ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
 
     </script>
