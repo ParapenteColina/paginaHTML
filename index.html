@@ -19,12 +19,12 @@
                 extend: {
                     colors: {
                         'parapente-darkest': '#0A0A0D', /* Negro Oscuro */
-                        'parapente-accent': '#0396A6', /* Cian/Azul Primario (#0396A6) */
-                        'parapente-secondary': '#037F8C', /* Cian Secundario (Más profundo) */
-                        'parapente-neutral': '#73706F', /* Gris Neutro */
+                        'parapente-accent': '#03738C', /* Cian/Azul Primario (#0396A6) */
+                        'parapente-secondary': '#0396A6', /* Cian Secundario (Más profundo) */
+                        'parapente-neutral': '#4B4544', /* Gris Neutro */
                         'parapente-background': '#F2F2F2', /* Fondo Blanco Roto/Claro (Usado en Header) */
-                        'parapente-text-gray': '#8E8B8B', /* Color de Texto Gris Específico */
-                        'parapente-light-cyan': '#D1F0F3', /* NUEVO: Cian Claro Solicitado */
+                        'parapente-text-gray': '#4B4544', /* Color de Texto Gris Específico */
+                        'parapente-light-cyan': '#0396A6', /* NUEVO: Cian Claro Solicitado */
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -56,7 +56,7 @@
         /* --- Animación del Spinner de Carga (Círculo Giratorio) --- */
         .loader {
             border: 4px solid #f3f3f3; 
-            border-top: 4px solid #0396A6; 
+            border-top: 4px solid #007794; 
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -183,6 +183,25 @@
         .clima-panel {
             min-width: 150px;
         }
+
+        .section-con-video-fondo {
+            position: relative; /* Clave para posicionar el video dentro */
+            overflow: hidden; /* Asegura que el video no se salga */
+        }
+
+        .video-fondo {
+            position: absolute; /* Lo saca del flujo normal */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centra el video perfectamente */
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1; /* ¡La magia! Lo envía detrás del contenido */
+            object-fit: cover; /* Similar a background-size: cover */
+            filter: brightness(0.7); /* Oscurece un poco para mejor contraste */
+        }
     </style>
 </head>
 <body class="text-parapente-darkest">
@@ -226,11 +245,15 @@
         
         <!-- Sección Hero / Portada (Contenido sin cambios) -->
         <section class="relative h-[70vh] overflow-hidden flex items-center justify-center mb-16 shadow-inner pt-24" 
-            style="background-color: #0A0A0D; 
-            background-image: url('https://www.colina.cl/wp-content/uploads/2018/10/jornada_inclusiva_parapente_sep_2018-1.jpg'); 
-            background-size: cover; 
-            background-position: center;">
-            <div class="text-center p-8 max-w-4xl bg-black/30 rounded-xl p-6"> 
+            style="background-color: #0A0A0D;">
+    
+            <video autoplay loop muted playsinline class="video-fondo" 
+                poster="https://www.colina.cl/wp-content/uploads/2018/10/jornada_inclusiva_parapente_sep_2018-1.jpg">
+            <source src="image/video1.mp4" type="video/mp4">
+                Tu navegador no soporta videos HTML5.
+            </video>
+
+            <div class="text-center p-8 max-w-4xl bg-black/30 rounded-xl p-6 z-10"> 
                 <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 animate-fadeInUp">
                     ¡El Cielo de <span class="text-parapente-secondary">Colina</span> te Espera!
                 </h1>
