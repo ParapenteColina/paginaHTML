@@ -406,6 +406,36 @@
                 <div class="flex overflow-x-auto space-x-6 pb-4">
             
                     <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
+                        <div class="card-image" style="background-image: url('image/value1.jpeg');"></div>
+                        <div class="opinion-overlay text-white">
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                            <p class="text-lg italic font-light opinion-quote">""</p>
+                            <p class="mt-4 font-semibold text-white">- </p>
+                            <span class="text-xs text-gray-300">Vuelo </span>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
+                        <div class="card-image" style="background-image: url('image/value2\,1.jpeg');"></div>
+                        <div class="opinion-overlay text-white">
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                            <p class="text-lg italic font-light opinion-quote">"x"</p>
+                            <p class="mt-4 font-semibold text-white">- j C.</p>
+                            <span class="text-xs text-gray-300">Vuelo 2024</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
+                        <div class="card-image" style="background-image: url('image/value5\,1.jpeg');"></div>
+                        <div class="opinion-overlay text-white">
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
+                            <p class="text-lg italic font-light opinion-quote">""</p>
+                            <p class="mt-4 font-semibold text-white">- </p>
+                            <span class="text-xs text-gray-300">Vuelo</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
                         <div class="card-image" style="background-image: url('image/Opera\ Captura\ de\ pantalla_2025-10-10_184248_www.google.com.png');"></div>
                         <div class="opinion-overlay text-white">
                             <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
@@ -416,17 +446,7 @@
                     </div>
 
                     <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('image/opinio2,1.png');"></div>
-                        <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">"Confieso que estaba muy asustado pero lo hice"</p>
-                            <p class="mt-4 font-semibold text-white">- Jeam P.</p>
-                            <span class="text-xs text-gray-300">Vuelo 2024</span>
-                        </div>
-                    </div>
-
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('https://placehold.co/700x400/73706F/0A0A0D?');"></div>
+                        <div class="card-image" style="background-image: url('image/value6\,1.jpeg');"></div>
                         <div class="opinion-overlay text-white">
                             <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
                             <p class="text-lg italic font-light opinion-quote">""</p>
@@ -435,15 +455,6 @@
                         </div>
                     </div>
 
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('https://placehold.co/700x400/037F8C/0A0A0D?');"></div>
-                        <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">""</p>
-                            <p class="mt-4 font-semibold text-white">- </p>
-                            <span class="text-xs text-gray-300">Vuelo </span>
-                        </div>
-                    </div>
             
                 </div>    
             </div>
@@ -543,196 +554,121 @@
 
     <!-- LÓGICA JAVASCRIPT -->
     <script>
-    // Carga de iconos Lucide
-         lucide.createIcons();
+    // ✅ Contenedor principal: Todo el código se ejecuta solo cuando el HTML está 100% listo.
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Carga de iconos Lucide (es seguro ponerlo aquí)
+        lucide.createIcons();
     
         // =========================================================
         // LÓGICA DE CLIMA: Integración del Backend (Pronóstico Real)
         // =========================================================
-
-        // 🚨 URL DEL BACKEND DE SUPABASE (Confirmada) 🚨
         const BACKEND_API_URL = 'https://ljvfbtgcefgyackjenhm.supabase.co/functions/v1/weather-data';
-    
-        // ✨ NUEVO: Agrega tu llave anónima aquí ✨
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqdmZidGdjZWZneWFja2plbmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4MTk1MjQsImV4cCI6MjAxMjM5NTUyNH0.m0-m5DFYv1L6s5vWSoS-s2h32F3Wio8E12x4lkeE_7k';
-
-        // 💡 CORRECCIÓN: Se cambió 'location' a 'flightLocation' para evitar conflicto con window.location
         const flightLocation = 'Colina'; 
 
-        /**
-         * Determina el ícono y la recomendación de vuelo basados en las condiciones.
-         * @param {number} windSpeed - Velocidad del viento en km/h.
-         * @param {string} conditions - Descripción general del clima.
-         * @returns {{icon: string, text: string, colorClass: string}}
-        */
+        // La función evaluateConditions no necesita cambios
         function evaluateConditions(windSpeed, conditions) {
+            // ... (tu lógica de evaluación de clima se mantiene igual)
             let icon = 'cloud';
             let text = 'Pendiente de Confirmar';
             let colorClass = 'text-gray-400';
-            const windLimit = 25; // Límite de seguridad para biplaza (km/h)
-
-            // 1. Evaluación del Viento
-            if (windSpeed > 30) {
-                text = '❌ Viento Peligroso';
-                colorClass = 'text-red-500';
-            } else if (windSpeed > windLimit) {
-                text = '⚠️ Viento Fuerte (Posiblemente Cancelado)';
-                colorClass = 'text-yellow-500';
-            } else if (windSpeed >= 10 && windSpeed <= windLimit) {
-                text = '✅ Ideal para Vuelo';
-                colorClass = 'text-green-500';
-            } else if (windSpeed < 10) {
-                text = '🟡 Viento Débil (Chequeo Final Necesario)';
-                colorClass = 'text-orange-400';
-            }
-
-            // 2. Evaluación del Clima (Sobreescribe la recomendación si el clima es malo)
+            const windLimit = 25;
+            if (windSpeed > 30) { text = '❌ Viento Peligroso'; colorClass = 'text-red-500'; }
+            else if (windSpeed > windLimit) { text = '⚠️ Viento Fuerte (Posiblemente Cancelado)'; colorClass = 'text-yellow-500'; }
+            else if (windSpeed >= 10 && windSpeed <= windLimit) { text = '✅ Ideal para Vuelo'; colorClass = 'text-green-500'; }
+            else if (windSpeed < 10) { text = '🟡 Viento Débil (Chequeo Final Necesario)'; colorClass = 'text-orange-400'; }
             const lowerConditions = conditions.toLowerCase();
-            if (lowerConditions.includes('rain') || lowerConditions.includes('thunderstorm') || lowerConditions.includes('nieve')) {
-                text = '❌ Mal Clima (Lluvia/Tormenta)';
-                colorClass = 'text-red-500';
-                icon = 'cloud-rain';
-            } else if (lowerConditions.includes('clear')) {
-                icon = 'sun';
-            } else if (lowerConditions.includes('clouds')) {
-                icon = 'cloud';
-            } else if (lowerConditions.includes('mist') || lowerConditions.includes('fog')) {
-                icon = 'cloud-drizzle';
-                if (text.includes('Ideal') || text.includes('Débil')) {
-                    text = '⚠️ Baja Visibilidad';
-                    colorClass = 'text-yellow-500';
-                }
-            }
-
+            if (lowerConditions.includes('rain') || lowerConditions.includes('thunderstorm') || lowerConditions.includes('nieve')) { text = '❌ Mal Clima (Lluvia/Tormenta)'; colorClass = 'text-red-500'; icon = 'cloud-rain'; }
+            else if (lowerConditions.includes('clear')) { icon = 'sun'; }
+            else if (lowerConditions.includes('clouds')) { icon = 'cloud'; }
+            else if (lowerConditions.includes('mist') || lowerConditions.includes('fog')) { icon = 'cloud-drizzle'; if (text.includes('Ideal') || text.includes('Débil')) { text = '⚠️ Baja Visibilidad'; colorClass = 'text-yellow-500'; } }
             return { icon, text, colorClass };
         }
 
-
-        /**
-         * Función principal para llamar al backend de Supabase y renderizar el pronóstico.
-         */
+        // La función renderWeatherSection no necesita cambios
         async function renderWeatherSection() {
             const container = document.getElementById('forecast-container');
             const loader = document.getElementById('forecast-loading');
             const errorMsg = document.getElementById('forecast-error');
-        
-            if (!container || !loader || !errorMsg) {
-                console.error("No se encontraron elementos de la sección de clima.");
-                return;
-            }
-
+            if (!container || !loader || !errorMsg) { console.error("No se encontraron elementos de la sección de clima."); return; }
             errorMsg.classList.add('hidden');
-            loader.style.display = 'flex';
-            loader.style.opacity = '1';
-            container.innerHTML = '';
+            loader.style.display = 'flex'; loader.style.opacity = '1';
+            // Vaciamos el contenedor al inicio para que solo se vea el loader.
+            const panels = container.querySelectorAll('.clima-panel');
+            panels.forEach(p => p.remove());
 
             try {
-                // 2. Llamada al backend, usando 'flightLocation'
                 const response = await fetch(`${BACKEND_API_URL}?location=${encodeURIComponent(flightLocation)}`, {
                     method: 'GET',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                 },
-            });
-
-                if (!response.ok) {
-                    // Si la respuesta no es OK (ej. 404/500), lanzamos un error claro
-                    const errorText = await response.text();
-                    console.error("Fallo al obtener datos del backend (Estado HTTP no OK):", errorText);
-                    throw new Error(`Error ${response.status} en la función de Supabase. Posiblemente API Key no configurada.`);
-                }
-            
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+                });
+                if (!response.ok) { const errorText = await response.text(); console.error("Fallo al obtener datos del backend:", errorText); throw new Error(`Error ${response.status}`); }
                 const result = await response.json();
-            
-                const forecastArray = result.data?.forecast; 
-
-                if (!forecastArray || forecastArray.length === 0) {
-                    throw new Error("El backend no devolvió datos de pronóstico válidos.");
-                }
-            
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
-            
-                // 5. Inyectar los paneles de pronóstico REALES
-                container.innerHTML = ''; 
-                container.style.display = 'grid'; 
+                const forecastArray = result.data?.forecast;
+                if (!forecastArray || forecastArray.length === 0) { throw new Error("El backend no devolvió datos válidos."); }
+                
+                // Vaciamos el loader y nos aseguramos de que el grid esté visible
+                container.innerHTML = '';
+                container.style.display = 'grid';
 
                 forecastArray.forEach(dayData => {
                     const date = new Date(dayData.date);
                     const dayOfWeek = date.toLocaleDateString('es-ES', { weekday: 'short' });
                     const dayNumber = date.getDate();
-                
                     const recommendation = evaluateConditions(dayData.wind_speed, dayData.conditions);
-                    const iconName = recommendation.icon; 
-                
                     const panelHTML = `
-                        <div class="bg-white p-4 rounded-xl shadow-lg border-t-4 border-parapente-accent flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-[1.03]">
-                            <p class="font-bold text-lg mb-1">${dayOfWeek} ${dayNumber}</p>
-                            <p class="text-sm text-gray-500 capitalize mb-3">${dayData.conditions}</p>
-                        
-                            <i data-lucide="${iconName}" class="w-8 h-8 text-parapente-secondary mb-3"></i>
-                        
+                        <div class="clima-panel bg-white p-4 rounded-xl shadow-lg border-t-4 border-parapente-accent flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-[1.03]">
+                            <p class="font-bold text-lg mb-1">${dayOfWeek} ${dayNumber}</p> <p class="text-sm text-gray-500 capitalize mb-3">${dayData.conditions}</p>
+                            <i data-lucide="${recommendation.icon}" class="w-8 h-8 text-parapente-secondary mb-3"></i>
                             <p class="text-3xl font-title font-extrabold text-parapente-darkest mb-1">${dayData.temperature_avg}°C</p>
                             <p class="text-xs text-gray-500">Min: ${dayData.temperature_min}°C / Max: ${dayData.temperature_max}°C</p>
-                        
-                            <div class="border-t pt-2 mt-2 w-full">
-                                <p class="font-semibold text-sm text-parapente-accent">Viento 💨</p>
-                                <p class="text-xs">${dayData.wind_speed} km/h</p>
-                            
-                                <p class="${recommendation.colorClass} font-bold text-xs mt-1 pt-1 border-t border-dashed border-gray-200 w-full">${recommendation.text}</p>
-                            </div>
-                        </div>
-                    `;
+                            <div class="border-t pt-2 mt-2 w-full"> <p class="font-semibold text-sm text-parapente-accent">Viento 💨</p> <p class="text-xs">${dayData.wind_speed} km/h</p> <p class="${recommendation.colorClass} font-bold text-xs mt-1 pt-1 border-t border-dashed border-gray-200 w-full">${recommendation.text}</p> </div>
+                        </div>`;
                     container.innerHTML += panelHTML;
                 });
-            
                 lucide.createIcons();
-
             } catch (error) {
                 console.error("Error al renderizar el clima:", error);
-            
-                container.innerHTML = '';
-                loader.style.display = 'none';
-                errorMsg.classList.remove('hidden');
-
+                if(loader) loader.style.display = 'none';
+                if(errorMsg) errorMsg.classList.remove('hidden');
+                if(container) container.innerHTML = ''; // Limpia el contenedor en caso de error
             } finally {
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => { loader.style.display = 'none'; }, 500);
+                }
             }
         }
     
-        // Llamar a la función para renderizar el clima tan pronto como cargue la página
-        document.addEventListener('DOMContentLoaded', renderWeatherSection);
+        // Llamar a la función del clima.
+        renderWeatherSection();
         
-    // Lógica para el formulario de contacto (simulación de envío)
-        const contactForm = document.getElementById('contact-form');
-        const formMessage = document.getElementById('form-message');
-
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Simulación de envío exitoso
-            formMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
-            formMessage.classList.add('bg-green-100', 'text-green-700');
-            formMessage.innerHTML = '¡Tu consulta ha sido enviada con éxito! Te contactaremos pronto.';
-            contactForm.reset(); // Limpia el formulario
-            
-            // Ocultar el mensaje después de 5 segundos
-            setTimeout(() => {
-                formMessage.classList.add('hidden');
-            }, 5000);
-        });
-
-
-        // --- Lógica para el menú de hamburguesa ---
+        // ===============================================
+        // LÓGICA DEL MENÚ HAMBURGUESA (AHORA FUNCIONARÁ) 🍔
+        // ===============================================
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        // Solo añadimos el 'listener' si el botón realmente existe
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
 
-    </script>
+        // ===============================================
+        // Lógica para el formulario (si existiera uno con esos IDs)
+        // ===============================================
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            const formMessage = document.getElementById('form-message');
+            contactForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                // Tu lógica de formulario aquí...
+            });
+        }
+    });
+</script>
 </body>
 </html>
