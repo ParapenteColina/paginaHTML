@@ -204,6 +204,52 @@
             object-fit: cover; /* Similar a background-size: cover */
             filter: brightness(1.2); /* Oscurece un poco para mejor contraste */
         }
+
+                /* --- CSS CORREGIDO para el Efecto de Brillo --- */
+
+        .shiny-effect {
+            /* 1. Aseguramos la posición y el display correctos */
+            position: relative; /* CRÍTICO para que el ::after se posicione bien */
+            display: inline-block; /* Asegura que el elemento se comporte correctamente */
+            overflow: hidden; /* Oculta el brillo cuando está fuera del elemento */
+
+            /* El color base del texto (no necesita cambios) */
+            color: #0396A6;
+        }
+
+        .shiny-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            /* 2. Hacemos que el brillo sea más alto que el elemento */
+            /* para que el ángulo de 110deg se vea mejor */
+            left: -50%; /* Empezamos un poco a la izquierda */
+            width: 200%; /* Hacemos el contenedor del gradiente el doble de ancho */
+            height: 100%;
+
+            /* El gradiente que crea el barrido de luz */
+            background: linear-gradient(
+                110deg,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.4) 50%, /* Ligeramente menos intenso */
+                rgba(255, 255, 255, 0) 60%
+            );
+
+            /* 3. Animación infinita */
+            animation: shine 4s linear infinite; /* 4s de duración */
+        }
+
+        /* La animación que mueve el brillo de izquierda a derecha */
+        @keyframes shine {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* Movemos el brillo completamente a través del elemento */
+                transform: translateX(100%);
+            }
+        }
+
     </style>
 </head>
 <body class="text-parapente-darkest">
@@ -214,7 +260,7 @@
         
             <div class="flex items-center space-x-3">
                 <img src="image/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/50x50/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina" class="h-10 w-10 rounded-full object-cover ring-2 ring-parapente-accent">
-                <span class="text-xl font-extrabold tracking-tight font-logo text-parapente-darkest">PARAPENTE <span class="text-parapente-accent">COLINA</span></span>
+                <span class="text-xl font-extrabold tracking-tight font-logo text-parapente-darkest ">PARAPENTE <span class="text-parapente-accent ">COLINA</span></span>
             </div>
 
             <nav class="hidden md:flex space-x-4">
@@ -269,7 +315,7 @@
 
         <!-- 2. Sección EMPRESA & INTRODUCCIÓN (Contenido sin cambios) -->
         <section id="empresa" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-accent border-b-2 border-parapente-accent/30 pb-2">Nuestra Empresa Familiar</h2>
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-accent border-b-2 border-parapente-accent/30 pb-2 title-animation">Nuestra Empresa Familiar</h2>
     
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
@@ -292,9 +338,9 @@
                             <i data-lucide="award" class="w-10 h-10 text-parapente-accent"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold font-serif text-parapente-darkest">Trayectoria desde 1992</h3>
+                            <h3 class="text-lg font-bold font-serif text-parapente-darkest">Trayectoria</h3>
                             <p class="mt-1 text-parapente-neutral leading-relaxed blur-on-scroll">
-                                Somos pioneros del parapente en Chile, con miles de vuelos realizados en la cordillera y la costa.
+                                 desde 1992 Somos pioneros del parapente en Chile, con miles de vuelos realizados en la cordillera y la costa.
                             </p>
                         </div>
                     </div>
@@ -333,7 +379,7 @@
         <!-- 3. Sección EXPERIENCIA, PRECIOS y DATOS EXTRA (Contenido sin cambios) -->
         <section id="experiencia" class="bg-parapente-light-cyan py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Detalles de la Experiencia y Precios</h2>
+                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Detalles de la Experiencia y Precios</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     
@@ -348,7 +394,7 @@
                     <div class="bg-white p-6 rounded-xl shadow-2xl card-hover transform scale-105 transition duration-300 border-4 border-parapente-accent"> 
                         <i data-lucide="tags" class="w-10 h-10 text-parapente-darkest mb-4 animate-bounce"></i> 
                         <h3 class="text-3xl font-bold mb-3 text-parapente-darkest ">Precio Promocional</h3>
-                        <p class="text-6xl font-extrabold text-parapente-secondary mb-2 blur-on-scroll">$45.000 <span class="text-xl font-normal">CLP</span></p>
+                        <p class="flex items-baseline text-5xl font-extrabold text-parapente-secondary mb-2 blur-on-scroll shiny-effect">$45.000 <span class="text-xl font-normal ml-2">CLP</span></p>
                         <p class="text-parapente-darkest font-semibold blur-on-scroll">Costo Total por Persona.</p>
                         <ul class="mt-4 text-sm text-parapente-darkest space-y-1 blur-on-scroll">
                             <li>Incluye: Pack fotos/video.</li>
@@ -371,7 +417,7 @@
 
         <!-- 4. Sección CLIMA (AHORA DINÁMICA CON LÓGICA DE EVALUACIÓN) -->
         <section id="clima" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Pronóstico de Vuelo (Viento): Evaluación Automática</h2>
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Pronóstico de Vuelo (Viento): Evaluación Automática</h2>
 
             <div id="forecast-container" class="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6">
              <!-- Los paneles de clima se inyectarán aquí con JavaScript -->
@@ -393,7 +439,7 @@
 
             <div class="text-center mt-8">
                 <!-- CTA Clima: Botón CIAN CLARO con letra GRIS -->
-                <a href="https://openweathermap.org/city/3871336" target="_blank" class="inline-block bg-parapente-light-cyan text-parapente-text-gray font-medium py-3 px-6 rounded-full shadow-md hover:bg-parapente-darkest hover:text-white transition duration-300">
+                <a href="https://openweathermap.org/city/3871336" target="_blank" class="inline-block bg-parapente-light-cyan text-parapente-text-gray font-medium py-3 px-6 rounded-full shadow-md hover:bg-parapente-darkest hover:text-white transition duration-300 shiny-effect">
                     <i data-lucide="cloud-drizzle" class="w-5 h-5 inline-block mr-2"></i> Ver Pronóstico Oficial (DMC)
                 </a>
             </div>
@@ -402,7 +448,7 @@
         <!-- 5. Sección OPINIONES DE CLIENTES (NUEVA CON EFECTOS) -->
         <section id="opiniones" class="py-16 bg-parapente-background">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Opiniones de Nuestros Clientes</h2>
+                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Opiniones de Nuestros Clientes</h2>
         
                 <div class="flex overflow-x-auto space-x-6 pb-4">
             
@@ -462,7 +508,7 @@
         </section>
         <!-- 6. Sección UBICACIÓN (Contenido sin cambios) -->
         <section id="ubicacion" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2">Cómo Llegar al Cerro de Colina</h2>
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Cómo Llegar al Cerro de Colina</h2>
             
             <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-parapente-accent/50 relative">
                 
@@ -489,7 +535,7 @@
             <div class="mt-8 text-center">
                 <p class="text-xl font-semibold text-parapente-darkest mb-4">Dirección Específica: Camino al Cerro, Colina. (Detalles exactos se dan al reservar).</p>
                 <!-- CTA Ubicación: Botón CIAN CLARO con letra GRIS -->
-                <a href="https://maps.app.goo.gl/" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-parapente-text-gray bg-parapente-light-cyan hover:bg-parapente-darkest hover:text-white transition duration-300">
+                <a href="https://maps.app.goo.gl/" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-parapente-text-gray bg-parapente-light-cyan hover:bg-parapente-darkest hover:text-white transition duration-300 shiny-effect">
                     <i data-lucide="navigation" class="w-5 h-5 inline-block mr-2"></i> Obtener Ruta y Navegar
                 </a>
             </div>
@@ -669,6 +715,10 @@
                 heroVideo.playbackRate = 0.3; 
             });
         }
+
+        // =================================================
+        // LÓGICA DE ANIMACIONES CON GSAP Y SCROLLTRIGGER
+        // =================================================
             // 1. First, tell GSAP that we are using the ScrollTrigger plugin
         gsap.registerPlugin(ScrollTrigger);
 
@@ -681,27 +731,45 @@
             {
                 // Initial state (starts blurred, transparent, and slightly moved)
                 opacity: 0,
-                filter: 'blur(10px)',
-                y: 50, // Starts 50px down
+                filter: 'blur(5px)',
+                y: 10, // Starts 50px down
             }, 
             {
                 // Final state (fully visible and sharp)
                 opacity: 1,
                 filter: 'blur(0px)',
                 y: 0, // Ends at its original position
-                duration: 1, // Animation duration
+                duration: 0.6, // Animation duration
             
                     // This is the magic part!
-                    scrollTrigger: {
+                scrollTrigger: {
                     trigger: element,       // The animation starts when this element enters the screen
-                    start: "top 85%",       // Starts when the top of the element is 85% down the viewport
-                    end: "bottom 90%",      // You can define an end point
+                    start: "top 90%",       // Starts when the top of the element is 85% down the viewport
+                    end: "bottom 95%",      // You can define an end point
                     toggleActions: "play none none none", // Plays the animation once and doesn't reverse
                     // For a smooth, scroll-linked effect, use scrub:
                     // scrub: 1, 
-                    }
+                    },
                 }
             );
+        });
+        
+        // --- NEW Animation for Titles ---
+        const titlesToAnimate = document.querySelectorAll('.title-animation');
+
+        titlesToAnimate.forEach(title => {
+            gsap.from(title, {
+                opacity: 0,
+                scale: 0.9, // Starts slightly smaller
+                y: 20,      // Starts slightly down
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: title,
+                    start: "top 90%", // Starts when the title is 90% down the screen
+                    toggleActions: "play none none none",
+                }
+            });
         });
 
         
