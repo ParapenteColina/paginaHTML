@@ -200,7 +200,7 @@
             height: auto;
             z-index: -1; /* ¡La magia! Lo envía detrás del contenido */
             object-fit: cover; /* Similar a background-size: cover */
-            filter: brightness(0.7); /* Oscurece un poco para mejor contraste */
+            filter: brightness(1.2); /* Oscurece un poco para mejor contraste */
         }
     </style>
 </head>
@@ -244,10 +244,9 @@
     <main class="">
         
         <!-- Sección Hero / Portada (Contenido sin cambios) -->
-        <section class="relative h-[70vh] overflow-hidden flex items-center justify-center mb-16 shadow-inner pt-24" 
-            style="background-color: #0A0A0D;">
+        <section class="relative h-[70vh] overflow-hidden flex items-center justify-center mb-16 shadow-inner pt-24" >
     
-            <video autoplay loop muted playsinline class="video-fondo" 
+            <video autoplay loop muted playsinline class="video-fondo" id="hero-video"
                 poster="https://www.colina.cl/wp-content/uploads/2018/10/jornada_inclusiva_parapente_sep_2018-1.jpg">
             <source src="image/video1.mp4" type="video/mp4">
                 Tu navegador no soporta videos HTML5.
@@ -658,16 +657,18 @@
         }
 
         // ===============================================
-        // Lógica para el formulario (si existiera uno con esos IDs)
+        // LÓGICA DEL VIDEO DE FONDO (AJUSTE DE VELOCidad)
         // ===============================================
-        const contactForm = document.getElementById('contact-form');
-        if (contactForm) {
-            const formMessage = document.getElementById('form-message');
-            contactForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                // Tu lógica de formulario aquí...
+        const heroVideo = document.getElementById('hero-video');
+
+            if (heroVideo) {
+            
+                heroVideo.addEventListener('loadedmetadata', () => {
+                heroVideo.playbackRate = 0.3; 
             });
         }
+
+        
     });
 </script>
 </body>
