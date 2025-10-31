@@ -385,7 +385,9 @@
                     
                     <!-- Tarjeta 1: Fondo BLANCO y Texto NEGRO -->
                     <div class="bg-white p-6 rounded-xl shadow-xl card-hover"> 
-                        <img src="https://placehold.co/80x80/037F8C/F2F2F2?text=EQUIPO" alt="Equipo de vuelo" class="w-20 h-20 mb-4 rounded-full object-cover mx-auto">
+                        <div class="w-20 h-20 mb-4 mx-auto rounded-full bg-parapente-accent/10 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-10 h-10 text-parapente-accent"></i>
+                         </div>
                         <h3 class="text-2xl font-bold mb-3 text-parapente-darkest ">La Experiencia</h3>
                         <p class="text-parapente-darkest blur-on-scroll">El vuelo tándem dura entre 15 a 20 minutos, dependiendo de las condiciones térmicas. Incluye instrucción previa, equipo completo (casco, arnés) y la garantía de volar con pilotos certificados DGAC. ¡Solo trae ganas de volar!</p>
                     </div>
@@ -400,10 +402,12 @@
                             <li>Incluye: Pack fotos/video.</li>
                         </ul>
                     </div>
-
+                           <!--  shield-alert -->
                     <!-- Tarjeta 3: Fondo BLANCO y Texto NEGRO -->
                     <div class="bg-white p-6 rounded-xl shadow-xl card-hover"> 
-                        <img src="https://placehold.co/80x80/73706F/F2F2F2?text=INFO" alt="Requisitos de vuelo" class="w-20 h-20 mb-4 rounded-full object-cover mx-auto">
+                        <div class="w-20 h-20 mb-4 mx-auto rounded-full bg-parapente-accent/10 flex items-center justify-center">
+                            <i data-lucide="shield-alert" class="w-10 h-10 text-parapente-accent"></i>
+                        </div>
                         <h3 class="text-2xl font-bold mb-3 text-parapente-darkest ">Datos a Considerar</h3>
                         <ul class="list-disc list-inside text-parapente-darkest space-y-2 blur-on-scroll">
                             <li>Reserva: Obligatoria vía WhatsApp.</li>
@@ -536,7 +540,7 @@
             <div class="mt-8 text-center">
                 <p class="text-xl font-semibold text-parapente-darkest mb-4">Dirección Específica: Camino al Cerro, Colina. (Detalles exactos se dan al reservar).</p>
                 <!-- CTA Ubicación: Botón CIAN CLARO con letra GRIS -->
-                <a href="https://maps.app.goo.gl/" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-parapente-text-gray bg-parapente-light-cyan hover:bg-parapente-darkest hover:text-white transition duration-300 shiny-effect">
+                <a href="https://maps.app.goo.gl/L35KEWa4gjumDi6eA" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-parapente-text-gray bg-parapente-light-cyan hover:bg-parapente-darkest hover:text-white transition duration-300 shiny-effect">
                     <i data-lucide="navigation" class="w-5 h-5 inline-block mr-2"></i> Obtener Ruta y Navegar
                 </a>
             </div>
@@ -621,15 +625,25 @@
             let text = 'Pendiente de Confirmar';
             let colorClass = 'text-gray-400';
             const windLimit = 25;
+
+
             if (windSpeed > 30) { text = '❌ Viento Peligroso'; colorClass = 'text-red-500'; }
-            else if (windSpeed > windLimit) { text = '⚠️ Viento Fuerte (Posiblemente Cancelado)'; colorClass = 'text-yellow-500'; }
+
+            else if (windSpeed > windLimit) { text = '⚠️ Viento Fuerte '; colorClass = 'text-yellow-500'; }
+
             else if (windSpeed >= 10 && windSpeed <= windLimit) { text = '✅ Ideal para Vuelo'; colorClass = 'text-green-500'; }
-            else if (windSpeed < 10) { text = '🟡 Viento Débil (Chequeo Final Necesario)'; colorClass = 'text-orange-400'; }
+
+            else if (windSpeed < 10) {text = 'Viento Débil (Chequeo Final Necesario)'; colorClass = 'text-gray-500';}
+
+
+            //2. clima
             const lowerConditions = conditions.toLowerCase();
-            if (lowerConditions.includes('rain') || lowerConditions.includes('thunderstorm') || lowerConditions.includes('nieve')) { text = '❌ Mal Clima (Lluvia/Tormenta)'; colorClass = 'text-red-500'; icon = 'cloud-rain'; }
-            else if (lowerConditions.includes('clear')) { icon = 'sun'; }
-            else if (lowerConditions.includes('clouds')) { icon = 'cloud'; }
-            else if (lowerConditions.includes('mist') || lowerConditions.includes('fog')) { icon = 'cloud-drizzle'; if (text.includes('Ideal') || text.includes('Débil')) { text = '⚠️ Baja Visibilidad'; colorClass = 'text-yellow-500'; } }
+
+            if (lowerConditions.includes('lluvia') || lowerConditions.includes('tormenta') || lowerConditions.includes('nieve')) { text = '❌ Mal Clima (Lluvia/Tormenta)'; colorClass = 'text-red-500'; icon = 'cloud-rain'; }
+            else if (lowerConditions.includes('claro')) { icon = 'sun'; }
+            else if (lowerConditions.includes('nubes')) { icon = 'cloud'; }
+            else if (lowerConditions.includes('niebla') || lowerConditions.includes('neblina')) { icon = 'cloud-drizzle'; if (text.includes('Ideal') || text.includes('Débil')) { text = '⚠️ Baja Visibilidad'; colorClass = 'text-yellow-500'; } }
+            
             return { icon, text, colorClass };
         }
 
@@ -639,6 +653,7 @@
             const loader = document.getElementById('forecast-loading');
             const errorMsg = document.getElementById('forecast-error');
             if (!container || !loader || !errorMsg) { console.error("No se encontraron elementos de la sección de clima."); return; }
+            
             errorMsg.classList.add('hidden');
             loader.style.display = 'flex'; loader.style.opacity = '1';
             // Vaciamos el contenedor al inicio para que solo se vea el loader.
@@ -664,14 +679,22 @@
                     const dayOfWeek = date.toLocaleDateString('es-ES', { weekday: 'short' });
                     const dayNumber = date.getDate();
                     const recommendation = evaluateConditions(dayData.wind_speed, dayData.conditions);
+                    const roundedMin = Math.round(dayData.temperature_min);
+                    const roundedMax = Math.round(dayData.temperature_max);
                     const panelHTML = `
                         <div class="clima-panel bg-white p-4 rounded-xl shadow-lg border-t-4 border-parapente-accent flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-[1.03]">
                             <p class="font-bold text-lg mb-1">${dayOfWeek} ${dayNumber}</p> <p class="text-sm text-gray-500 capitalize mb-3">${dayData.conditions}</p>
                             <i data-lucide="${recommendation.icon}" class="w-8 h-8 text-parapente-secondary mb-3"></i>
-                            <p class="text-3xl font-title font-extrabold text-parapente-darkest mb-1">${dayData.temperature_avg}°C</p>
-                            <p class="text-xs text-gray-500">Min: ${dayData.temperature_min}°C / Max: ${dayData.temperature_max}°C</p>
-                            <div class="border-t pt-2 mt-2 w-full"> <p class="font-semibold text-sm text-parapente-accent">Viento 💨</p> <p class="text-xs">${dayData.wind_speed} km/h</p> <p class="${recommendation.colorClass} font-bold text-xs mt-1 pt-1 border-t border-dashed border-gray-200 w-full">${recommendation.text}</p> </div>
-                        </div>`;
+                            <p class="text-2xl font-bold text-parapente-darkest mb-3">${roundedMin}°/${roundedMax}°C</p>
+                            <div class="border-t pt-2 mt-2 w-full">
+                        <p class="font-semibold text-sm text-parapente-accent flex items-center justify-center">
+                            Viento <i data-lucide="wind" class="w-4 h-4 ml-1"></i>
+                        </p>
+                        <p class="text-xs">${dayData.wind_speed} km/h</p>
+                
+                        <p class="${recommendation.colorClass} font-bold text-xs mt-1 pt-1 border-t border-dashed border-gray-200 w-full">${recommendation.text}</p>
+                        </div>
+                    </div>`;
                     container.innerHTML += panelHTML;
                 });
                 lucide.createIcons();
@@ -692,7 +715,7 @@
         renderWeatherSection();
         
         // ===============================================
-        // LÓGICA DEL MENÚ HAMBURGUESA (AHORA FUNCIONARÁ) 🍔
+        // LÓGICA DEL MENÚ HAMBURGUESA (AHORA FUNCIONARÁ)
         // ===============================================
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
