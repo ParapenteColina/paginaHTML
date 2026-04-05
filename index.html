@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
-<head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<head>  
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parapente Colina - Vuelos de Bautismo en Santiago</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <title>Parapente Colina | Vuelos de Bautismo y Aventura en Santiago</title>
+    <meta name="description" content="Vive la mejor experiencia de vuelo en parapente en Colina, Santiago. Reserva tu vuelo con instructores certificados. Seguridad, adrenalina y vistas increíbles.">
+    <meta name="keywords" content="parapente santiago, vuelo en parapente colina, vuelo de parapente, deportes extremos santiago, parapente santiago chile">
+    <meta name="author" content="Parapente Colina">
+    <meta name="robots" content="index, follow"> <meta property="og:title" content="Vuela en Parapente en Colina, Santiago">
+    <meta property="og:description" content="Reserva tu vuelo de parapente . Vistas panorámicas y máxima seguridad.">
+    <meta property="og:type" content="website">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <!-- Carga de Tailwind CSS CDN para un diseño moderno y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <!-- FUENTES: Inter (Cuerpo), y Montserrat (Nueva fuente para TODOS los Títulos y Logo) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- Iconos Lucide para un look limpio -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
+
     <!-- CONFIGURACIÓN DE TAILWIND (Incluye nuevo cian claro) -->
     <script>
         tailwind.config = {
@@ -37,233 +50,21 @@
             }
         }
     </script>
-
-    <style>
-        /* --- Estilos CSS Personalizados y Animaciones --- */
-        body {
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc; 
-            color: #0A0A0D; 
-        }
-        
-        h1, h2, h3 {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        /* La cabecera es completamente sólida (sin opacidad) */
-        .sticky-header {
-            transition: all 0.3s ease-in-out; 
-        }
-
-        /* --- Animación del Spinner de Carga (Círculo Giratorio) --- */
-        .loader {
-            border: 4px solid #f3f3f3; 
-            border-top: 4px solid #007794; 
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* --- Fin del Spinner --- */
-        
-        /* Efecto de inclinación/elevación sutil en las tarjetas al pasar el mouse */
-        .card-hover {
-            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ------------------------------------- */
-        /* Scroll Reveal (Acelerado a 0.5s) */
-        /* ------------------------------------- */
-        .blur-in {
-            transition: filter 0.5s ease-out, opacity 0.5s ease-out; /* Velocidad acelerada */
-            filter: blur(6px);
-            opacity: 0;
-        }
-        .blur-in.in-view {
-            filter: blur(0px);
-            opacity: 1;
-        }
-
-        /* Animación Opiniones */
-        .opinion-card {
-            position: relative;
-            overflow: hidden;
-            height: 350px; 
-            cursor: pointer;
-            border-radius: 1rem; 
-        }
-        
-        .opinion-card .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease-in-out;
-            /* COMENTARIO: REEMPLAZA ESTAS URLs por las fotos de tus clientes */
-            background-image: url('https://placehold.co/700x400/037F8C/F2F2F2?text=CLIENTE+SATISFECHO'); 
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .opinion-card:nth-child(2) .card-image {
-            background-image: url('https://placehold.co/700x400/0396A6/F2F2F2?text=VUELO+EN+FAMILIA'); 
-        }
-        .opinion-card:nth-child(3) .card-image {
-            background-image: url('https://placehold.co/700x400/73706F/0A0A0D?text=PILOTO+EXPERTO'); 
-        }
-        /* NUEVO: Cuarto placeholder para la nueva opinión */
-        .opinion-card:nth-child(4) .card-image {
-            background-image: url('https://placehold.co/700x400/037F8C/0A0A0D?text=PAISAJE+IMPRESIONANTE'); 
-        }
-
-        .opinion-card:hover .card-image {
-            transform: scale(1.1);
-        }
-
-        /* ------------------------------------- */
-        /* Overlay que TAPA la foto con transparencia al hacer hover */
-        /* ------------------------------------- */
-        .opinion-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem; 
-            /* Fondo semi-transparente para que la foto se vea debajo */
-            background-color: rgba(0, 0, 0, 0.75); 
-            backdrop-filter: none;
-            height: 100%; /* Cubre toda la tarjeta */
-            
-            /* Estado Inicial: Visible solo el 15% inferior (la "saliente negra") */
-            transform: translateY(85%); 
-            
-            transition: transform 0.4s ease-out; 
-            border-radius: 1rem; 
-            
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end; /* Mantiene el contenido pegado al fondo */
-        }
-
-        .opinion-card:hover .opinion-overlay {
-            /* Estado Hover: Sube y cubre el 100% de la foto */
-            transform: translateY(0); 
-        }
-
-        /* El contenido (Ícono y Cita) que debe estar oculto inicialmente y aparecer en hover */
-        .opinion-overlay > i,
-        .opinion-overlay > .opinion-quote {
-            opacity: 0; /* Oculto por opacidad */
-            transition: opacity 0.3s ease-in; 
-            display: block; 
-        }
-
-        /* El contenido (Ícono y Cita) se hace visible cuando el overlay está arriba */
-        .opinion-card:hover .opinion-overlay > i,
-        .opinion-card:hover .opinion-overlay > .opinion-quote {
-            opacity: 1; /* Aparece por opacidad */
-            margin-bottom: 1rem;
-        }
-
-        /* Ajustamos el margen del nombre para que esté más arriba del fondo */
-        .opinion-overlay .mt-4 {
-            margin-top: 0.5rem; 
-        }
-        
-        /* Estilos específicos para la sección de clima dinámica */
-        .clima-grid {
-            min-height: 250px; /* Asegura que el spinner se vea */
-        }
-        .clima-panel {
-            min-width: 150px;
-        }
-
-        .section-con-video-fondo {
-            position: relative; /* Clave para posicionar el video dentro */
-            overflow: hidden; /* Asegura que el video no se salga */
-        }
-
-        .video-fondo {
-            position: absolute; /* Lo saca del flujo normal */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Centra el video perfectamente */
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -1; /* ¡La magia! Lo envía detrás del contenido */
-            object-fit: cover; /* Similar a background-size: cover */
-            filter: brightness(1.2); /* Oscurece un poco para mejor contraste */
-        }
-
-                /* --- CSS CORREGIDO para el Efecto de Brillo --- */
-
-        .shiny-effect {
-            /* 1. Aseguramos la posición y el display correctos */
-            position: relative; /* CRÍTICO para que el ::after se posicione bien */
-            display: inline-block; /* Asegura que el elemento se comporte correctamente */
-            overflow: hidden; /* Oculta el brillo cuando está fuera del elemento */
-
-            /* El color base del texto (no necesita cambios) */
-            color: #0396A6;
-        }
-
-        .shiny-effect::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            /* 2. Hacemos que el brillo sea más alto que el elemento */
-            /* para que el ángulo de 110deg se vea mejor */
-            left: -50%; /* Empezamos un poco a la izquierda */
-            width: 200%; /* Hacemos el contenedor del gradiente el doble de ancho */
-            height: 100%;
-
-            /* El gradiente que crea el barrido de luz */
-            background: linear-gradient(
-                110deg,
-                rgba(255, 255, 255, 0) 40%,
-                rgba(255, 255, 255, 0.4) 50%, /* Ligeramente menos intenso */
-                rgba(255, 255, 255, 0) 60%
-            );
-
-            /* 3. Animación infinita */
-            animation: shine 4s linear infinite; /* 4s de duración */
-        }
-
-        /* La animación que mueve el brillo de izquierda a derecha */
-        @keyframes shine {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                /* Movemos el brillo completamente a través del elemento */
-                transform: translateX(100%);
-            }
-        }
-
-    </style>
 </head>
-<body class="text-parapente-darkest">
 
-    <!-- 1. CABECERA FIJA (STICKY HEADER) -->
-    <header id="header" class="sticky-header fixed top-0 left-0 right-0 bg-parapente-background text-parapente-darkest z-50 py-4 transition-all duration-300 ease-in-out shadow-xl">
+
+
+<body class="text-parapente-darkest font-sans bg-parapente-background">
+
+    <header id="header" class="sticky top-0 z-50 w-full bg-parapente-background text-parapente-darkest py-4 transition-all duration-300 ease-in-out shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         
-            <div class="flex items-center space-x-3">
-                <img src="image/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/50x50/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina" class="h-10 w-10 rounded-full object-cover ring-2 ring-parapente-accent">
-                <span class="text-xl font-extrabold tracking-tight font-logo text-parapente-darkest ">PARAPENTE <span class="text-parapente-accent ">COLINA</span></span>
-            </div>
+            <a href="#inicio" class="flex items-center space-x-3 group" aria-label="Ir al inicio de Parapente Colina">
+                <img src="image/logo.png" onerror="this.onerror=null; this.src='https://placehold.co/50x50/0396A6/F2F2F2?text=LOGO';" alt="Logo Parapente Colina - Vuelos en Santiago" class="h-10 w-10 rounded-full object-cover ring-2 ring-parapente-accent transition-transform group-hover:scale-110">
+                <span class="text-xl font-extrabold tracking-tight font-logo text-parapente-darkest">PARAPENTE <span class="text-parapente-accent">COLINA</span></span>
+            </a>
 
-            <nav class="hidden md:flex space-x-4">
+            <nav class="hidden md:flex space-x-4" aria-label="Navegación principal">
                 <a href="#empresa" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">EMPRESA</a>
                 <a href="#experiencia" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">EXPERIENCIA</a>
                 <a href="#clima" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent transition duration-300 p-2 rounded-lg">CLIMA</a>
@@ -272,14 +73,14 @@
             </nav>
 
             <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-parapente-darkest">
+                <button id="mobile-menu-button" class="text-parapente-darkest hover:text-parapente-accent focus:outline-none transition-colors" aria-label="Abrir menú de navegación">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-parapente-background pb-4">
-            <nav class="flex flex-col items-center space-y-4">
+        <div id="mobile-menu" class="hidden md:hidden bg-parapente-background pb-4 border-t border-gray-200 mt-4">
+            <nav class="flex flex-col items-center space-y-4 pt-4" aria-label="Navegación móvil">
                 <a href="#empresa" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">EMPRESA</a>
                 <a href="#experiencia" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">EXPERIENCIA</a>
                 <a href="#clima" class="nav-link text-sm font-medium text-parapente-darkest hover:text-parapente-accent">CLIMA</a>
@@ -289,138 +90,193 @@
         </div>
     </header>
 
-    <main class="">
-        
-        <!-- Sección Hero / Portada (Contenido sin cambios) -->
-        <section class="relative h-[70vh] overflow-hidden flex items-center justify-center mb-16 shadow-inner pt-24" >
-    
-            <video autoplay loop muted playsinline class="video-fondo" id="hero-video"
-                poster="https://www.colina.cl/wp-content/uploads/2018/10/jornada_inclusiva_parapente_sep_2018-1.jpg">
-            <source src="image/video1.mp4" type="video/mp4">
-                Tu navegador no soporta videos HTML5.
-            </video>
 
-            <div class="text-center p-8 max-w-4xl bg-black/30 rounded-xl p-6 z-10"> 
-                <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 animate-fadeInUp">
-                    ¡El Cielo de <span class="text-parapente-secondary">Colina</span> te Espera!
-                </h1>
-                <p class="text-xl md:text-2xl text-parapente-background font-light mb-8">
-                    Vuelos de Parapente Tándem con la mejor vista de la Región Metropolitana.
-                </p>
-                <a href="#experiencia" class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-xl text-parapente-darkest bg-parapente-background hover:bg-parapente-neutral hover:text-white transition duration-300 transform hover:scale-105">
-                    Descubre la Aventura <i data-lucide="chevrons-down" class="w-5 h-5 ml-2"></i>
-                </a>
+    <main>
+  
+        <!-- 1. Portada fondo de pantalla con texto introductorio camnbiar imagen -->
+        <section id="inicio" class="relative h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden pt-24">
+    
+            <img 
+                src="image/value8,3.jpeg" 
+                alt="Vista espectacular volando en parapente sobre Colina" 
+                class="absolute inset-0 w-full h-full object-cover -z-20"
+            >
+            
+            <div class="absolute inset-0 bg-parapente-darkest/40 -z-10"></div>
+
+            <div class="relative z-10 text-center px-4 max-w-4xl mx-auto transform transition-all duration-1000 translate-y-0 opacity-100 animate-pulse-once">
+                
+                <div class="bg-gray-900/40 backdrop-blur-md p-10 md:p-12 rounded-2xl shadow-2xl border border-gray-700/50">
+
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 drop-shadow-lg tracking-tight leading-tight">
+                        ¡El Cielo de <span class="text-parapente-light-cyan">Colina</span> te Espera!
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-gray-100 mb-10 drop-shadow-md font-light leading-relaxed">
+                        Vuelos de Parapente Tándem con la mejor vista de la Región Metropolitana.
+                    </p>
+                    
+                    <a href="#experiencia" class="inline-flex items-center px-8 py-4 bg-white text-parapente-darkest font-bold rounded-full hover:bg-parapente-light-cyan hover:text-white transition-all duration-300 transform hover:scale-105 shadow-xl group">
+                        Descubre la Aventura
+                        <i data-lucide="chevrons-down" class="w-5 h-5 ml-2 group-hover:animate-bounce"></i>
+                    </a>
+                </div>
             </div>
         </section>
 
+
         <!-- 2. Sección EMPRESA & INTRODUCCIÓN (Contenido sin cambios) -->
-        <section id="empresa" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-accent border-b-2 border-parapente-accent/30 pb-2 title-animation">Nuestra Empresa Familiar</h2>
+        <section id="empresa" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 overflow-hidden">
+            
+            <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-16 text-parapente-accent border-b-2 border-parapente-accent/30 pb-4 blur-in" data-scroll>
+                Nuestra Empresa Familiar
+            </h2>
     
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-
-                    <div class="flex items-start space-x-4">
-                        <div>
-                            <i data-lucide="wind" class="w-10 h-10 text-parapente-accent"></i>
+    
+                    <div class="flex items-start space-x-4 blur-in" data-scroll>
+                        <div class="bg-parapente-accent/10 p-3 rounded-xl shrink-0">
+                            <i data-lucide="wind" class="w-8 h-8 text-parapente-accent"></i>
                         </div>
                         <div>
                             <h3 class="text-lg font-bold font-serif text-parapente-darkest">Vuelos Tándem</h3>
-                            <p class="mt-1 text-parapente-neutral leading-relaxed blur-on-scroll">
+                            <p class="mt-2 text-sm text-parapente-neutral leading-relaxed">
                                 No necesitas experiencia previa, disfruta un vuelo en parapente acompañado de un piloto profesional.
                             </p>
                         </div>
                     </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div>
-                            <i data-lucide="award" class="w-10 h-10 text-parapente-accent"></i>
+    
+                    <div class="flex items-start space-x-4 blur-in" data-scroll>
+                        <div class="bg-parapente-accent/10 p-3 rounded-xl shrink-0">
+                            <i data-lucide="award" class="w-8 h-8 text-parapente-accent"></i>
                         </div>
                         <div>
                             <h3 class="text-lg font-bold font-serif text-parapente-darkest">Trayectoria</h3>
-                            <p class="mt-1 text-parapente-neutral leading-relaxed blur-on-scroll">
-                                 desde 1993 Somos pioneros del parapente en Chile, con miles de vuelos realizados en la cordillera.
+                            <p class="mt-2 text-sm text-parapente-neutral leading-relaxed">
+                                Desde 1993 somos pioneros del parapente en Chile, con miles de vuelos realizados en la cordillera.
                             </p>
                         </div>
                     </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div>
-                            <i data-lucide="mountain-snow" class="w-10 h-10 text-parapente-accent"></i>
+    
+                    <div class="flex items-start space-x-4 blur-in" data-scroll>
+                        <div class="bg-parapente-accent/10 p-3 rounded-xl shrink-0">
+                            <i data-lucide="mountain-snow" class="w-8 h-8 text-parapente-accent"></i>
                         </div>
                         <div>
                             <h3 class="text-lg font-bold font-serif text-parapente-darkest">Vistas Panorámicas</h3>
-                            <p class="mt-1 text-parapente-neutral leading-relaxed blur-on-scroll">
-                                El Cerro Colina ofrece disfruta de una perspectiva única del valle de Chicureo.
+                            <p class="mt-2 text-sm text-parapente-neutral leading-relaxed">
+                                El Cerro Colina te ofrece disfrutar de una perspectiva única y privilegiada del valle de Chicureo.
                             </p>
                         </div>
                     </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div>
-                            <i data-lucide="video" class="w-10 h-10 text-parapente-accent"></i>
+    
+                    <div class="flex items-start space-x-4 blur-in" data-scroll>
+                        <div class="bg-parapente-accent/10 p-3 rounded-xl shrink-0">
+                            <i data-lucide="video" class="w-8 h-8 text-parapente-accent"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold font-serif text-parapente-darkest">Fotos y Vídeos HD</h3>
-                            <p class="mt-1 text-parapente-neutral leading-relaxed blur-on-scroll">
-                                Llévate recuerdos inolvidables con fotografías y grabaciones de alta calidad de tu vuelo en Chile.
+                            <h3 class="text-lg font-bold font-serif text-parapente-darkest">Fotos y Videos HD</h3>
+                            <p class="mt-2 text-sm text-parapente-neutral leading-relaxed">
+                                Llévate recuerdos inolvidables con fotografías y grabaciones de alta calidad de tu vuelo.
                             </p>
                         </div>
                     </div>
-
+    
                 </div>
-                <div class="relative overflow-hidden rounded-xl shadow-2xl card-hover">
-                    <img src="image/vuelo.jpg" onerror="this.onerror=null; this.src='https://placehold.co/700x400/0396A6/F2F2F2?text=VUELO+DESPEGANDO+EN+EL+CERRO';" alt="Vuelo despegando en Parapente Colina" class="w-full h-full object-cover">
+                
+                <div class="relative overflow-hidden rounded-2xl shadow-2xl blur-in transition-all duration-300 hover:-translate-y-2 hover:shadow-parapente-accent/40" data-scroll>
+                    <img src="image/vuelo.jpg" onerror="this.onerror=null; this.src='https://placehold.co/700x400/0396A6/F2F2F2?text=VUELO+DESPEGANDO+EN+EL+CERRO';" alt="Vuelo tándem despegando en Parapente Colina, Santiago de Chile" class="w-full h-full object-cover">
                 </div>
             </div>
         </section>
+
 
         <!-- 3. Sección EXPERIENCIA, PRECIOS y DATOS EXTRA (Contenido sin cambios) -->
-        <section id="experiencia" class="bg-parapente-light-cyan py-16">
+        <section id="experiencia" class="bg-parapente-light-cyan/20 py-24 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Detalles de la Experiencia y Precios</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-16 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-4 blur-in" data-scroll>
+                    Detalles de la Experiencia y Precios
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
                     
-                    <!-- Tarjeta 1: Fondo BLANCO y Texto NEGRO -->
-                    <div class="bg-white p-6 rounded-xl shadow-xl card-hover"> 
-                        <div class="w-20 h-20 mb-4 mx-auto rounded-full bg-parapente-accent/10 flex items-center justify-center">
-                            <i data-lucide="shield-check" class="w-10 h-10 text-parapente-accent"></i>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl blur-in" data-scroll> 
+                        <div class="w-16 h-16 mb-6 rounded-full bg-parapente-accent/10 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-8 h-8 text-parapente-accent"></i>
                          </div>
-                        <h3 class="text-2xl font-bold mb-3 text-parapente-darkest ">La Experiencia</h3>
-                        <p class="text-parapente-darkest blur-on-scroll">El vuelo tándem dura entre 15 a 20 minutos, dependiendo de las condiciones térmicas. Incluye instrucción previa, equipo completo (casco, arnés) y la garantía de volar con pilotos certificados DGAC. ¡Solo trae ganas de volar!</p>
+                        <h3 class="text-2xl font-bold mb-4 text-parapente-darkest">La Experiencia</h3>
+                        <p class="text-parapente-neutral leading-relaxed">
+                            El vuelo tándem dura entre 15 a 20 minutos, dependiendo de las condiciones térmicas. Incluye instrucción previa, equipo completo (casco, arnés) y la garantía de volar con pilotos certificados DGAC. ¡Solo trae ganas de volar!
+                        </p>
                     </div>
 
-                    <!-- Tarjeta 2: Fondo BLANCO y Texto NEGRO -->
-                    <div class="bg-white p-6 rounded-xl shadow-2xl card-hover transform scale-105 transition duration-300 border-4 border-parapente-accent"> 
-                        <i data-lucide="tags" class="w-10 h-10 text-parapente-darkest mb-4 animate-bounce"></i> 
-                        <h3 class="text-3xl font-bold mb-3 text-parapente-darkest ">Precio Promocional</h3>
-                        <p class="flex items-baseline text-5xl font-extrabold text-parapente-secondary mb-2 blur-on-scroll shiny-effect">$45.000 <span class="text-xl font-normal ml-2">CLP</span></p>
-                        <p class="text-parapente-darkest font-semibold blur-on-scroll">Costo Total por Persona.</p>
-                        <ul class="mt-4 text-sm text-parapente-darkest space-y-1 blur-on-scroll">
-                            <li>Incluye: Pack fotos/video (GoPro).</li>
-                        </ul>
-                    </div>
-
-                    <!-- Tarjeta 3: Fondo BLANCO y Texto NEGRO -->
-                    <div class="bg-white p-6 rounded-xl shadow-xl card-hover"> 
-                        <div class="w-20 h-20 mb-4 mx-auto rounded-full bg-parapente-accent/10 flex items-center justify-center">
-                            <i data-lucide="shield-alert" class="w-10 h-10 text-parapente-accent"></i>
+                    <div class="bg-white p-8 rounded-2xl shadow-2xl border-4 border-parapente-accent relative transform md:-translate-y-4 transition-all duration-300 hover:-translate-y-6 blur-in" data-scroll> 
+                        
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-parapente-accent text-white px-6 py-1 rounded-full text-sm font-bold tracking-widest shadow-md">
+                            OFERTA
                         </div>
-                        <h3 class="text-2xl font-bold mb-3 text-parapente-darkest ">Datos a Considerar</h3>
-                        <ul class="list-disc list-inside text-parapente-darkest space-y-2 blur-on-scroll">
-                            <li>Reserva: Obligatoria vía WhatsApp.</li>
-                            <li>Peso: Mínimo 30 kg / Máximo 120 kg.</li>
-                            <li>Vuelo: Cliente acompañado del piloto.</li>
-                            <li>Mayores de 4 años.</li>
+
+                        <div class="w-16 h-16 mb-6 mx-auto rounded-full bg-parapente-accent/10 flex items-center justify-center">
+                            <i data-lucide="tags" class="w-8 h-8 text-parapente-accent"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-center text-parapente-darkest">Precio Promocional</h3>
+                        
+                        <div class="text-center mb-6">
+                            <p class="text-lg text-gray-400 line-through font-medium mb-1 decoration-parapente-accent decoration-2">
+                                $45.000
+                            </p>
+                            <p class="flex items-center justify-center text-5xl font-extrabold text-parapente-accent mb-1 shiny-effect">
+                                $40.000 <span class="text-xl font-normal ml-2 text-parapente-neutral">CLP</span>
+                            </p>
+                            <p class="text-sm font-semibold text-parapente-neutral">Costo Total por Persona.</p>
+                        </div>
+                        
+                        <ul class="mt-4 mb-8 text-sm text-parapente-darkest space-y-3">
+                            <li class="flex items-center">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-parapente-accent mr-2 shrink-0"></i> 
+                                Incluye: Pack fotos y video (GoPro).
+                            </li>
+                        </ul>
+
+                        <a href="#contacto" class="flex justify-center items-center w-full px-6 py-4 bg-white text-parapente-darkest border-2 border-parapente-darkest font-bold rounded-full hover:bg-parapente-light-cyan hover:text-white hover:border-parapente-light-cyan transition-all duration-300 transform hover:scale-105 shadow-md group">
+                            Reserva tu Vuelo
+                            <i data-lucide="arrow-right" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl blur-in" data-scroll> 
+                        <div class="w-16 h-16 mb-6 rounded-full bg-parapente-accent/10 flex items-center justify-center">
+                            <i data-lucide="info" class="w-8 h-8 text-parapente-accent"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-parapente-darkest">Datos a Considerar</h3>
+                        <ul class="text-parapente-neutral space-y-3">
+                            <li class="flex items-start">
+                                <i data-lucide="chevron-right" class="w-5 h-5 text-parapente-accent mr-2 shrink-0 mt-0.5"></i> 
+                                Reserva obligatoria vía WhatsApp.
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="chevron-right" class="w-5 h-5 text-parapente-accent mr-2 shrink-0 mt-0.5"></i> 
+                                Peso: Mínimo 30 kg / Máximo 120 kg.
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="chevron-right" class="w-5 h-5 text-parapente-accent mr-2 shrink-0 mt-0.5"></i> 
+                                Vuelo: Cliente acompañado del piloto.
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="chevron-right" class="w-5 h-5 text-parapente-accent mr-2 shrink-0 mt-0.5"></i> 
+                                Mayores de 4 años.
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Sección CLIMA (AHORA DINÁMICA CON LÓGICA DE EVALUACIÓN) -->
+        
+        <!-- 4. Sección CLIMA (AHORA DINÁMICA CON LÓGICA DE EVALUACIÓN) falta arreglar cambiar boton-->
         <section id="clima" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Pronóstico de Vuelo (Viento): Evaluación Automática</h2>
 
@@ -450,98 +306,133 @@
             </div>
         </section>
 
-        <!-- 5. Sección OPINIONES DE CLIENTES (NUEVA CON EFECTOS) -->
-        <section id="opiniones" class="py-16 bg-parapente-background">
+        <!-- 5. Sección OPINIONES DE CLIENTES (NUEVA CON EFECTOS) faltan imagenes-->
+        <section id="opiniones" class="py-24 bg-parapente-background overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Opiniones de Nuestros Clientes</h2>
+                
+                <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-16 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-4 blur-in" data-scroll>
+                    Opiniones de Nuestros Clientes
+                </h2>
         
-                <div class="flex overflow-x-auto space-x-6 pb-4">
+                <div class="flex overflow-x-auto space-x-6 pb-8 pt-4 snap-x snap-mandatory hide-scrollbar blur-in" data-scroll>
             
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('image/value1.jpeg');"></div>
+                    <div class="flex-shrink-0 w-80 h-[400px] opinion-card shadow-xl rounded-2xl snap-center mx-2 border border-gray-200">
+                        <div class="w-full h-full card-image-container absolute inset-0">
+                            <img src="image/cliente1.jpg" onerror="this.onerror=null; this.src='https://placehold.co/400x600/037F8C/F2F2F2?text=Cliente+Ximena';" alt="Cliente Ximena O. volando en parapente" class="w-full h-full object-cover rounded-2xl">
+                        </div>
+                        
                         <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">"Fue una tremenda experiencia … muy buena , muy profesionales los instructores"</p>
-                            <p class="mt-4 font-semibold text-white">- Ximena O.</p>
-                            <span class="text-xs text-gray-300">Vuelo 2025 </span>
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary mb-2"></i>
+                            <p class="text-lg italic font-light opinion-quote leading-relaxed">"Fue una tremenda experiencia... muy buena, muy profesionales los instructores"</p>
+                            <div class="mt-4">
+                                <p class="font-semibold text-white text-lg">- Ximena O.</p>
+                                <span class="text-sm text-gray-300 font-medium">Vuelo 2025</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('image/value2\,1.jpeg');"></div>
+                    <div class="flex-shrink-0 w-80 h-[400px] opinion-card shadow-xl rounded-2xl snap-center mx-2 border border-gray-200">
+                        <div class="w-full h-full card-image-container absolute inset-0">
+                            <img src="image/cliente2.jpg" onerror="this.onerror=null; this.src='https://placehold.co/400x600/0396A6/F2F2F2?text=Cliente+Jaqueline';" alt="Cliente Jaqueline M. volando en parapente" class="w-full h-full object-cover rounded-2xl">
+                        </div>
                         <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">"Excelente experiencia, muy preocupados los organizadores en general"</p>
-                            <p class="mt-4 font-semibold text-white">- Jaqueline M.</p>
-                            <span class="text-xs text-gray-300">Vuelo 2025</span>
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary mb-2"></i>
+                            <p class="text-lg italic font-light opinion-quote leading-relaxed">"Excelente experiencia, muy preocupados los organizadores en general"</p>
+                            <div class="mt-4">
+                                <p class="font-semibold text-white text-lg">- Jaqueline M.</p>
+                                <span class="text-sm text-gray-300 font-medium">Vuelo 2025</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('image/value5\,1.jpeg');"></div>
+                    <div class="flex-shrink-0 w-80 h-[400px] opinion-card shadow-xl rounded-2xl snap-center mx-2 border border-gray-200">
+                        <div class="w-full h-full card-image-container absolute inset-0">
+                            <img src="image/cliente3.jpg" onerror="this.onerror=null; this.src='https://placehold.co/400x600/73706F/F2F2F2?text=Cliente+Anita';" alt="Cliente Anitaluisa A. volando en parapente" class="w-full h-full object-cover rounded-2xl">
+                        </div>
                         <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">"Buena atención muy cálidos el dueño un amor de persona  ambiente familiar 10/10 👌🏻"</p>
-                            <p class="mt-4 font-semibold text-white">- Anitaluisa A.</p>
-                            <span class="text-xs text-gray-300">Vuelo 2025</span>
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary mb-2"></i>
+                            <p class="text-lg italic font-light opinion-quote leading-relaxed">"Buena atención, muy cálidos. El dueño un amor de persona, ambiente familiar 10/10 👌🏻"</p>
+                            <div class="mt-4">
+                                <p class="font-semibold text-white text-lg">- Anitaluisa A.</p>
+                                <span class="text-sm text-gray-300 font-medium">Vuelo 2025</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('image/Opera\ Captura\ de\ pantalla_2025-10-10_184248_www.google.com.png');"></div>
+                    <div class="flex-shrink-0 w-80 h-[400px] opinion-card shadow-xl rounded-2xl snap-center mx-2 border border-gray-200">
+                        <div class="w-full h-full card-image-container absolute inset-0">
+                            <img src="image/cliente4.jpg" onerror="this.onerror=null; this.src='https://placehold.co/400x600/037F8C/0A0A0D?text=Cliente+Mayling';" alt="Cliente Mayling A. volando en parapente" class="w-full h-full object-cover rounded-2xl">
+                        </div>
                         <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">"Ame la experiencia... La vista al volar es hermosa y los caballeros que nos atendieron son muy profesionales"</p>
-                            <p class="mt-4 font-semibold text-white">- Mayling A.</p>
-                            <span class="text-xs text-gray-300">Vuelo Marzo 2025</span>
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary mb-2"></i>
+                            <p class="text-lg italic font-light opinion-quote leading-relaxed">"Amé la experiencia... La vista al volar es hermosa y los caballeros que nos atendieron son muy profesionales"</p>
+                            <div class="mt-4">
+                                <p class="font-semibold text-white text-lg">- Mayling A.</p>
+                                <span class="text-sm text-gray-300 font-medium">Vuelo Marzo 2025</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex-shrink-0 w-80 opinion-card shadow-2xl card-hover">
-                        <div class="card-image" style="background-image: url('image/value6\,1.jpeg');"></div>
+                    <div class="flex-shrink-0 w-80 h-[400px] opinion-card shadow-xl rounded-2xl snap-center mx-2 border border-gray-200">
+                        <div class="w-full h-full card-image-container absolute inset-0">
+                            <img src="image/cliente5.jpg" onerror="this.onerror=null; this.src='https://placehold.co/400x600/0396A6/F2F2F2?text=Cliente+Francisca';" alt="Cliente Francisca O. volando en parapente" class="w-full h-full object-cover rounded-2xl">
+                        </div>
                         <div class="opinion-overlay text-white">
-                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary"></i>
-                            <p class="text-lg italic font-light opinion-quote">"Una experiencia maravillosa, los pilotos muy buenos, vista hermosa, buen ambiente"</p>
-                            <p class="mt-4 font-semibold text-white">- Francisca O.</p>
-                            <span class="text-xs text-gray-300">Vuelo 2025</span>
+                            <i data-lucide="quote" class="w-8 h-8 text-parapente-secondary mb-2"></i>
+                            <p class="text-lg italic font-light opinion-quote leading-relaxed">"Una experiencia maravillosa, los pilotos muy buenos, vista hermosa, buen ambiente"</p>
+                            <div class="mt-4">
+                                <p class="font-semibold text-white text-lg">- Francisca O.</p>
+                                <span class="text-sm text-gray-300 font-medium">Vuelo 2025</span>
+                            </div>
                         </div>
                     </div>
-
             
                 </div>    
             </div>
         </section>
-        <!-- 6. Sección UBICACIÓN (Contenido sin cambios) -->
-        <section id="ubicacion" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <h2 class="text-4xl font-extrabold text-center mb-12 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-2 title-animation">Cómo Llegar al Cerro de Colina</h2>
+
+
+        <!-- 6. Sección UBICACIÓN (Contenido sin cambios) listo -->
+        <section id="ubicacion" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 overflow-hidden">
             
-            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-parapente-accent/50 relative">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-16 text-parapente-darkest border-b-2 border-parapente-accent/30 pb-4 blur-in" data-scroll>
+                Cómo Llegar al Cerro de Colina
+            </h2>
+            
+            <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white ring-4 ring-parapente-accent/20 relative bg-gray-100 blur-in" data-scroll>
                 
-                <!-- Contenedor del Spinner de Carga -->
-                <div id="map-loader" class="absolute inset-0 flex items-center justify-center bg-gray-100 z-10 transition-opacity duration-500">
-                    <div class="loader"></div>
+                <div id="map-loader" class="absolute inset-0 flex items-center justify-center z-10 bg-gray-50 transition-opacity duration-500">
+                    <div class="flex flex-col items-center">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-parapente-accent animate-spin mb-3"></i>
+                        <p class="text-sm text-parapente-neutral font-medium">Cargando mapa interactivo...</p>
+                    </div>
                 </div>
 
-                <!-- IFRAME Mock de Mapa de Google Maps (Se oculta hasta que carga el iframe) -->
                 <iframe 
                     id="google-map"
                     src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d26715.987701276546!2d-70.68854907038376!3d-33.17479143191721!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662bb1438bb4a93%3A0xca87eaa4dc216bdf!2sParapente%20Colina%2C%20Centro%20de%20vuelo%20libre!5e0!3m2!1ses!2scl!4v1760133953341!5m2!1ses!2scl" 
                     width="100%" 
                     height="450" 
-                    style="border:0; opacity: 0;" 
+                    class="border-0 opacity-0 transition-opacity duration-1000" 
                     allowfullscreen="" 
                     loading="lazy" 
                     referrerpolicy="no-referrer-when-downgrade"
                     title="Mapa de Colina, Chile"
-                    onload="document.getElementById('map-loader').style.opacity = '0'; document.getElementById('map-loader').style.display = 'none'; this.style.opacity = '1';">
+                    onload="document.getElementById('map-loader').style.opacity = '0'; setTimeout(() => document.getElementById('map-loader').style.display = 'none', 500); this.classList.remove('opacity-0'); this.classList.add('opacity-100');">
                 </iframe>
             </div>
             
-            <div class="mt-8 text-center">
-                <p class="text-xl font-semibold text-parapente-darkest mb-4">Dirección Específica: Camino al Cerro, Colina. (Detalles exactos se dan al reservar).</p>
-                <!-- CTA Ubicación: Botón CIAN CLARO con letra GRIS -->
-                <a href="https://maps.app.goo.gl/L35KEWa4gjumDi6eA" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-parapente-text-gray bg-parapente-light-cyan hover:bg-parapente-darkest hover:text-white transition duration-300 shiny-effect">
-                    <i data-lucide="navigation" class="w-5 h-5 inline-block mr-2"></i> Obtener Ruta y Navegar
+            <div class="mt-12 text-center blur-in" data-scroll>
+                
+                <p class="text-lg md:text-xl text-parapente-darkest mb-8 bg-parapente-accent/10 inline-block px-6 py-3 rounded-xl border border-parapente-accent/20">
+                    <i data-lucide="map-pin" class="w-5 h-5 inline-block text-parapente-accent mr-1 -mt-1"></i>
+                    <span class="font-bold">Dirección:</span> Camino al Cerro, Colina. <br class="md:hidden"> <span class="text-sm md:text-lg text-parapente-neutral">(Detalles exactos se enviarán al reservar).</span>
+                </p>
+                <br>
+                
+                <a href="https://maps.app.goo.gl/L35KEWa4gjumDi6eA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-8 py-4 bg-parapente-darkest text-white font-bold rounded-full hover:bg-parapente-light-cyan transition-all duration-300 transform hover:scale-105 shadow-xl group">
+                    Obtener Ruta y Navegar
+                    <i data-lucide="navigation" class="w-5 h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
                 </a>
             </div>
         </section>
@@ -596,6 +487,7 @@
             </div>
     </footer>
 
+    
     <!-- BOTÓN FLOTANTE DE WHATSAPP (Contenido sin cambios) -->
     <a href="https://wa.me/56963708037?text=Hola,%20quisiera%20reservar%20un%20vuelo%20en%20parapente%20en%20Colina." target="_blank" class="whatsapp-float fixed bottom-6 right-6 bg-green-500 p-4 rounded-full shadow-2xl transition duration-300 transform hover:scale-110 flex items-center justify-center" aria-label="Chatea con nosotros por WhatsApp para reservar">
         <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" class="text-parapente-darkest">
@@ -603,7 +495,36 @@
         </svg>
     </a>
 
+
     <!-- LÓGICA JAVASCRIPT -->
+
+    // logica de animacion
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Creamos un "observador" que vigila cuándo los elementos entran en pantalla
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Si el elemento ya es visible en la pantalla...
+                    if (entry.isIntersecting) {
+                        // Le agregamos la clase 'in-view' que activa la animación en el CSS
+                        entry.target.classList.add('in-view');
+                        
+                        // Opcional: dejamos de vigilarlo para que no se anime de nuevo al subir
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, { 
+                threshold: 0.15 // Se activa cuando al menos el 15% del elemento es visible
+            });
+
+            // Le decimos al observador que vigile todos los elementos que tengan la clase .blur-in
+            document.querySelectorAll('.blur-in').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+
     <script>
     // ✅ Contenedor principal: Todo el código se ejecuta solo cuando el HTML está 100% listo.
     document.addEventListener('DOMContentLoaded', () => {
