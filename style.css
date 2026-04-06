@@ -1,0 +1,94 @@
+/* ==========================================================================
+   style.css - Parapente Colina (Optimizado)
+   ========================================================================== */
+
+/* Ocultar scrollbar para un look más limpio en el carrusel */
+
+
+/* --- Scroll Reveal (Acelerado a 0.5s) --- */
+.blur-in {
+    transition: filter 0.5s ease-out, opacity 0.5s ease-out;
+    filter: blur(6px);
+    opacity: 0;
+}
+.blur-in.in-view {
+    filter: blur(0px);
+    opacity: 1;
+}
+
+/* --- Animación de las Tarjetas de Opiniones --- */
+.opinion-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.opinion-card .card-image-container {
+    transition: transform 0.5s ease-in-out;
+}
+
+.opinion-card:hover .card-image-container {
+    transform: scale(1.1);
+}
+
+.opinion-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem; 
+    background-color: rgba(0, 0, 0, 0.75); 
+    backdrop-filter: none;
+    height: 100%; 
+    transform: translateY(85%); 
+    transition: transform 0.4s ease-out; 
+    border-radius: 1rem; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.opinion-card:hover .opinion-overlay {
+    transform: translateY(0); 
+}
+
+.opinion-overlay > i,
+.opinion-overlay > .opinion-quote {
+    opacity: 0; 
+    transition: opacity 0.3s ease-in; 
+    display: block; 
+}
+
+.opinion-card:hover .opinion-overlay > i,
+.opinion-card:hover .opinion-overlay > .opinion-quote {
+    opacity: 1; 
+    margin-bottom: 1rem;
+}
+
+/* --- Efecto de Brillo (Shiny Effect) --- */
+.shiny-effect {
+    position: relative; 
+    display: inline-block; 
+    overflow: hidden; 
+}
+
+.shiny-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%; 
+    width: 200%; 
+    height: 100%;
+    background: linear-gradient(
+        110deg,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.4) 50%, 
+        rgba(255, 255, 255, 0) 60%
+    );
+    animation: shine 4s linear infinite; 
+}
+
+@keyframes shine {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+}
